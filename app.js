@@ -610,12 +610,13 @@ function setupScrollStorytelling(video) {
   video.currentTime = 0;
   video.pause();
 
-  // Create the GSAP scroll-bound timeline with scrub smoothing
+  // Create the GSAP scroll-bound timeline with scrub smoothing (shorter on mobile)
+  const scrollLength = isMobile ? 1800 : 5000;
   const tl = gsap.timeline({
     scrollTrigger: {
       trigger: "#story-pin-container",
       start: "top top",
-      end: "+=5000",   // Increased scroll length for a more relaxed, smooth pace
+      end: `+=${scrollLength}`,
       scrub: 1.5,       // High smoothing for target time interpolation
       pin: true,        // Pin the container
       anticipatePin: 1

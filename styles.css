@@ -1934,10 +1934,12 @@ html.lenis, html.lenis body {
 
 @media (max-width: 768px) {
   .scene-title-main {
-    font-size: 2.75rem;
+    font-size: 2.25rem !important;
+    line-height: 1.2 !important;
   }
   .scene-heading {
-    font-size: 2.2rem;
+    font-size: 1.85rem !important;
+    line-height: 1.3 !important;
   }
   .scene-logo {
     width: 70px;
@@ -1953,6 +1955,14 @@ html.lenis, html.lenis body {
   }
   .scene-content {
     padding: 1rem;
+  }
+  .nav-cta {
+    display: none !important;
+  }
+  .section-title {
+    font-size: 2rem !important;
+    line-height: 1.32 !important;
+    margin-bottom: 1rem !important;
   }
 }
 
@@ -2658,12 +2668,36 @@ textarea.form-input {
     grid-template-columns: 1fr;
   }
   .success-stories-wrapper, .testimonial-card {
-    padding: 2.25rem 1.75rem;
+    padding: 2.25rem 1.5rem;
   }
   .testimonial-text {
-    font-size: 1.15rem;
+    font-size: 1.125rem;
+    line-height: 1.55;
   }
   .lightbox-arrow.prev { left: 0.25rem; }
   .lightbox-arrow.next { right: 0.25rem; }
   .lightbox-close { top: 0.25rem; right: 0.25rem; font-size: 2.2rem; }
+  .timeline {
+    padding-left: 1.5rem;
+  }
+  .timeline-dot {
+    left: -1.5rem;
+  }
+  .timeline-content {
+    padding: 1.25rem 1.5rem;
+  }
+  .marquee-logo {
+    padding: 0 1.75rem;
+    font-size: 1.1rem;
+  }
+  .marquee-container {
+    padding: 1.5rem 0;
+    margin-bottom: 2.5rem;
+  }
+  .placement-stat-card {
+    padding: 1.75rem 1.5rem;
+  }
+  .placement-stat-card h3 {
+    font-size: 2.5rem;
+  }
 }
