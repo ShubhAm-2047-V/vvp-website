@@ -1,8 +1,15 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <script>
+    (function() {
+      const theme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
   
   <!-- SEO Meta Tags -->
   <title>V.V.P. Polytechnic, Solapur | Leading Diploma Engineering Institute</title>
@@ -19,9 +26,12 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <!-- Custom Stylesheet -->
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=4.0">
 </head>
 <body>
+
+  <!-- Global Scroll Progress Bar -->
+  <div id="scroll-progress"></div>
 
   <!-- Custom Animated Cursor & Pointer Background Glow -->
   <div id="custom-cursor">
@@ -45,7 +55,7 @@
     </div>
   </div>
 
-  <!-- Background Glowing Blobs for Visual Interest -->
+  <!-- Background Glowing Blobs -->
   <div class="bg-glow-container">
     <div class="bg-blob blob-1"></div>
     <div class="bg-blob blob-2"></div>
@@ -65,14 +75,11 @@
       </a>
       
       <nav class="nav-menu" id="navMenu">
-        <a href="#home" class="nav-link">Home</a>
         <a href="#about" class="nav-link">About</a>
-        <a href="#departments" class="nav-link">Departments</a>
+        <a href="#departments" class="nav-link">Academics</a>
         <a href="#admissions" class="nav-link">Admissions</a>
-        <a href="#facilities" class="nav-link">Campus Life</a>
         <a href="#placement" class="nav-link">Placements</a>
-        <a href="#gallery" class="nav-link">Gallery</a>
-        <a href="#contact" class="nav-link">Contact</a>
+        <a href="#facilities" class="nav-link">Campus Life</a>
         <a href="#contact" class="btn btn-primary menu-cta">Apply Now</a>
       </nav>
 
@@ -82,7 +89,7 @@
           <i class="fa-solid fa-moon moon-icon"></i>
           <i class="fa-solid fa-sun sun-icon"></i>
         </button>
-        <a href="#contact" class="btn btn-primary nav-cta">Apply Now</a>
+        <a href="#contact" class="btn btn-primary nav-cta btn-magnetic">Apply Now</a>
         <button class="hamburger" id="hamburger" aria-label="Toggle menu">
           <span></span>
           <span></span>
@@ -92,7 +99,7 @@
     </div>
   </header>
 
-  <!-- Storytelling Cinematic Intro -->
+  <!-- Storytelling Cinematic Intro (PRESERVED BEHAVIOR) -->
   <section id="home" class="story-pin-section">
     <div id="story-pin-container">
       <div class="video-container">
@@ -109,6 +116,10 @@
           </div>
           <h1 class="scene-title-main gradient-text">V.V.P. POLYTECHNIC</h1>
           <p class="scene-subtitle-main">Soregaon, Solapur | Estd. 2007</p>
+          <div class="scene-cta-row">
+            <a href="#about" class="btn btn-primary btn-magnetic">Explore Campus</a>
+            <a href="#contact" class="btn btn-secondary btn-magnetic">Apply Now</a>
+          </div>
           <div class="scroll-prompt">
             <span>Scroll to Enter Campus</span>
             <i class="fa-solid fa-chevron-down scroll-arrow"></i>
@@ -116,8 +127,6 @@
         </div>
       </div>
 
-      <!-- Scene 2: Camera Enters Gate (implied by scroll and video playback) -->
-      
       <!-- Scene 3: Welcome Text -->
       <div class="story-scene" id="scene-3">
         <div class="scene-content welcome-scene">
@@ -139,7 +148,7 @@
             </div>
             <div class="story-stat-card glass-panel">
               <span class="story-stat-number gradient-text" id="stat-courses">0</span>
-              <span class="story-stat-label">Engineering Programs</span>
+              <span class="story-stat-label">Departments</span>
             </div>
             <div class="story-stat-card glass-panel">
               <span class="story-stat-number gradient-text" id="stat-faculty">0</span>
@@ -149,27 +158,43 @@
               <span class="story-stat-number gradient-text" id="stat-placements">0%</span>
               <span class="story-stat-label">Placement Support</span>
             </div>
+            <div class="story-stat-card glass-panel">
+              <span class="story-stat-number gradient-text" id="stat-excellence">0</span>
+              <span class="story-stat-label">Years of Excellence</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- About & Timeline Section -->
+  <!-- About & Storytelling Section -->
   <section class="about" id="about">
     <div class="container">
       <div class="section-title-wrapper reveal">
         <span class="section-tag">About V.V.P.</span>
-        <h2 class="section-title">Pioneering Technical Excellence</h2>
+        <h2 class="section-title">Pioneering Technical <span class="gradient-text">Excellence</span></h2>
         <p class="section-desc">Established with a vision to nurture competent engineering professionals, V.V.P. Polytechnic has been a cornerstone of quality education in Solapur since 2007.</p>
       </div>
 
       <div class="about-grid">
         <!-- History narrative & achievements -->
         <div class="about-intro reveal">
-          <h3 class="about-heading gradient-text">Academic Achievements</h3>
+          <h3 style="font-size: 2rem; margin-bottom: 1.5rem;" class="gradient-text">Institution Overview</h3>
           <p>Our institute is approved by the All India Council for Technical Education (AICTE), New Delhi, and recognized by the Directorate of Technical Education (DTE), Maharashtra. Affiliated with the Maharashtra State Board of Technical Education (MSBTE), Mumbai, we maintain a history of stellar academic outcomes and board ranks.</p>
           
+          <!-- Mission & Vision Cards -->
+          <div class="about-mission-grid">
+            <div class="mission-card glass-panel">
+              <h4><i class="fa-solid fa-eye"></i> Our Vision</h4>
+              <p>To produce highly skilled technician engineers capable of meeting the global challenges of technology and society, keeping ethics intact.</p>
+            </div>
+            <div class="mission-card vision glass-panel">
+              <h4><i class="fa-solid fa-bullseye"></i> Our Mission</h4>
+              <p>To provide student-centric, industry-aligned technical education and cultivate research, discipline, and core engineering skills.</p>
+            </div>
+          </div>
+
           <div class="about-features-grid">
             <div class="about-feat-card glass-panel glass-panel-hover">
               <div class="feat-icon"><i class="fa-solid fa-award"></i></div>
@@ -228,15 +253,138 @@
           </div>
         </div>
       </div>
+
+      <!-- Leadership Section -->
+      <div class="leadership-section reveal">
+        <div class="section-title-wrapper" style="margin-bottom: 2.5rem;">
+          <span class="section-tag">Our Leaders</span>
+          <h3 class="section-title" style="font-size: 2.25rem;">Founding Board & Leadership</h3>
+        </div>
+        <div class="leadership-grid">
+          <div class="leader-card glass-panel glass-panel-hover">
+            <div class="leader-avatar"><i class="fa-solid fa-user-tie"></i></div>
+            <h4>Dr. G. K. Deshmukh</h4>
+            <div class="leader-title">President, VVP</div>
+            <p class="leader-quote">"We believe in grooming global technical leaders through persistent industry exposure and ethical mentorship."</p>
+          </div>
+          <div class="leader-card glass-panel glass-panel-hover">
+            <div class="leader-avatar"><i class="fa-solid fa-graduation-cap"></i></div>
+            <h4>Dr. S. R. Deshmukh</h4>
+            <div class="leader-title">Founder Trustee</div>
+            <p class="leader-quote">"Providing technical skills combined with values ensures VVP graduates are preferred across top corporate boards."</p>
+          </div>
+          <div class="leader-card glass-panel glass-panel-hover">
+            <div class="leader-avatar"><i class="fa-solid fa-user-gear"></i></div>
+            <h4>Prof. A. B. Patil</h4>
+            <div class="leader-title">Principal, VVP Polytechnic</div>
+            <p class="leader-quote">"Our primary focus is practical engineering, allowing students to learn by designing systems in our high-end labs."</p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
+
+  <!-- Animated Divider -->
+  <svg class="animated-divider" viewBox="0 0 100 10" preserveAspectRatio="none">
+    <path d="M0 5 Q 25 10, 50 5 T 100 5" fill="none" stroke-width="0.3"/>
+  </svg>
+
+  <!-- Why Choose Us Section (NEW) -->
+  <section class="why-choose-us" id="why-choose-us">
+    <div class="container">
+      <div class="section-title-wrapper reveal">
+        <span class="section-tag">VVP Advantages</span>
+        <h2 class="section-title">Why Choose VVP <span class="gradient-text">Polytechnic?</span></h2>
+        <p class="section-desc">Experience a state-of-the-art educational environment specifically engineered to help you transition smoothly from classroom logic to industrial deployment.</p>
+      </div>
+
+      <div class="bento-grid reveal">
+        <!-- 1. Col 2 Bento Card -->
+        <div class="bento-card bento-col-2 glass-panel glass-panel-hover">
+          <div class="why-card">
+            <div class="why-icon-container"><i class="fa-solid fa-industry"></i></div>
+            <h4>Industry-Aligned Training</h4>
+            <p>Our courses are aligned with the latest MSBTE board curricula, enhanced with additional certifications in IoT, Web Development, and Advanced CAD design to match active engineering job specs.</p>
+            <div class="bento-tags-container">
+              <span class="bento-tech-tag"><i class="fa-brands fa-python"></i> Python</span>
+              <span class="bento-tech-tag"><i class="fa-solid fa-microchip"></i> IoT & Embedded</span>
+              <span class="bento-tech-tag"><i class="fa-solid fa-compass-drafting"></i> Auto-CAD</span>
+              <span class="bento-tech-tag"><i class="fa-solid fa-terminal"></i> Linux Sys</span>
+              <span class="bento-tech-tag"><i class="fa-solid fa-brain"></i> AI Models</span>
+            </div>
+          </div>
+        </div>
+        <!-- 2. Col 2 Bento Card -->
+        <div class="bento-card bento-col-2 glass-panel glass-panel-hover">
+          <div class="why-card">
+            <div class="why-icon-container"><i class="fa-solid fa-microchip"></i></div>
+            <h4>State-of-the-Art Laboratory Infrastructure</h4>
+            <p>From advanced mechanical workshops with CNC machines to dedicated GPU cloud labs for AI & ML, students get real hands-on experience using industry-standard equipment.</p>
+            <div class="bento-grid-visual">
+              <div class="bento-grid-dot"></div>
+              <div class="bento-grid-dot"></div>
+              <div class="bento-grid-dot"></div>
+              <div class="bento-grid-dot"></div>
+              <div class="bento-grid-line"></div>
+            </div>
+          </div>
+        </div>
+        <!-- 3. Col 1 Bento Card -->
+        <div class="bento-card bento-col-1 glass-panel glass-panel-hover">
+          <div class="why-card">
+            <div class="why-icon-container"><i class="fa-solid fa-briefcase"></i></div>
+            <h4>95%+ Placement Track Record</h4>
+            <p>We host on-campus drives with corporate partners like TATA Power, L&T, Infosys, and Cognizant.</p>
+            <div class="bento-stat-glowing">
+              <span class="bento-stat-num gradient-text">95%+</span>
+              <span class="bento-trend-badge"><i class="fa-solid fa-arrow-trend-up"></i> Peak Placement</span>
+            </div>
+          </div>
+        </div>
+        <!-- 4. Col 2 Bento Card -->
+        <div class="bento-card bento-col-2 glass-panel glass-panel-hover">
+          <div class="why-card">
+            <div class="why-icon-container"><i class="fa-solid fa-network-wired"></i></div>
+            <h4>Corporate MoU Partnerships</h4>
+            <p>Strategic alliances with regional industries facilitate continuous guest lectures, internships, field visits, and sponsorship opportunities for final year projects.</p>
+            <div class="bento-partners-logos">
+              <span class="partner-logo-pill">Tata Power</span>
+              <span class="partner-logo-pill">L&T Infra</span>
+              <span class="partner-logo-pill">Infosys Tech</span>
+              <span class="partner-logo-pill">Wipro Tech</span>
+              <span class="partner-logo-pill">Cognizant</span>
+            </div>
+          </div>
+        </div>
+        <!-- 5. Col 1 Bento Card -->
+        <div class="bento-card bento-col-1 glass-panel glass-panel-hover">
+          <div class="why-card">
+            <div class="why-icon-container"><i class="fa-solid fa-volleyball"></i></div>
+            <h4>Vibrant Campus Life</h4>
+            <p>We nurture student talents through sports meets, engineering exhibitions, and cultural festivals.</p>
+            <div class="bento-tags-container">
+              <span class="bento-event-tag">Sports Meet</span>
+              <span class="bento-event-tag">TechFest</span>
+              <span class="bento-event-tag">Design Expo</span>
+              <span class="bento-event-tag">Cultural Night</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Animated Divider -->
+  <svg class="animated-divider" viewBox="0 0 100 10" preserveAspectRatio="none">
+    <path d="M0 5 Q 25 0, 50 5 T 100 5" fill="none" stroke-width="0.3"/>
+  </svg>
 
   <!-- Departments Section -->
   <section class="departments" id="departments">
     <div class="container">
       <div class="section-title-wrapper reveal">
         <span class="section-tag">Academic Programs</span>
-        <h2 class="section-title">Our Specialized Departments</h2>
+        <h2 class="section-title">Our Specialized <span class="gradient-text">Departments</span></h2>
         <p class="section-desc">Choose from our six high-demand engineering diploma tracks, each backed by state-of-the-art laboratory facilities and industrial exposure.</p>
       </div>
 
@@ -315,7 +463,7 @@
     <div class="container">
       <div class="section-title-wrapper reveal">
         <span class="section-tag">Join V.V.P.</span>
-        <h2 class="section-title">Admission Guide & Eligibility Checker</h2>
+        <h2 class="section-title">Admission Guide & <span class="gradient-text">Eligibility</span></h2>
         <p class="section-desc">Check if you meet the requirements for admission. We offer direct entries for qualified candidates.</p>
       </div>
 
@@ -353,7 +501,7 @@
 
         <!-- Interactive Calculator Card -->
         <div class="calculator-card glass-panel reveal">
-          <h3 style="margin-bottom: 1.5rem;"><i class="fa-solid fa-calculator" style="color: var(--color-accent);"></i> Quick Eligibility Checker</h3>
+          <h3 style="margin-bottom: 2rem;"><i class="fa-solid fa-calculator" style="color: var(--color-accent);"></i> Quick Eligibility Checker</h3>
           <form id="eligibilityForm">
             <div class="form-group">
               <label for="entryLevel">Applying For</label>
@@ -381,7 +529,7 @@
               </select>
             </div>
 
-            <button type="submit" class="btn btn-primary" style="width:100%; margin-top: 1rem;">
+            <button type="submit" class="btn btn-primary btn-magnetic" style="width:100%; margin-top: 1rem;">
               Calculate Eligibility <i class="fa-solid fa-circle-question"></i>
             </button>
           </form>
@@ -399,7 +547,7 @@
     <div class="container">
       <div class="section-title-wrapper reveal">
         <span class="section-tag">Campus Life</span>
-        <h2 class="section-title">VIBRANT CAMPUS & INFRASTRUCTURE</h2>
+        <h2 class="section-title">Vibrant Campus & <span class="gradient-text">Infrastructure</span></h2>
         <p class="section-desc">Experience a balanced combination of academics, practical knowledge, and leisure facilities.</p>
       </div>
 
@@ -408,7 +556,7 @@
           <button class="tab-btn active" data-tab="labs">Laboratories</button>
           <button class="tab-btn" data-tab="library">Central Library</button>
           <button class="tab-btn" data-tab="hostel">Hostel Facilities</button>
-          <button class="tab-btn" data-tab="placement">Placement Cell</button>
+          <button class="tab-btn" data-tab="placement-cell">Placement Cell</button>
         </div>
 
         <!-- 1. Labs Tab -->
@@ -478,7 +626,7 @@
         </div>
 
         <!-- 4. Placement Tab -->
-        <div class="tab-content" id="placement">
+        <div class="tab-content" id="placement-cell">
           <div class="tab-details">
             <h3>Excellent Career & Placements Support</h3>
             <p>Our dedicated Training & Placement Cell builds corporate partnerships and conducts regular resume clinics, soft skills training, mock interviews, and campus recruitment drives with leading regional MNCs.</p>
@@ -507,7 +655,7 @@
     <div class="container">
       <div class="section-title-wrapper reveal">
         <span class="section-tag">Career Success</span>
-        <h2 class="section-title">Industrial Placements & MOUs</h2>
+        <h2 class="section-title">Industrial Placements & <span class="gradient-text">MOUs</span></h2>
         <p class="section-desc">Connecting our students with top multinational corporations and regional engineering leaders. Our graduates enjoy high employment rates and robust career starts.</p>
       </div>
 
@@ -515,46 +663,77 @@
       <div class="marquee-container reveal">
         <div class="marquee-track">
           <!-- Slide logos (Double elements for seamless loop) -->
-          <div class="marquee-logo"><span>TATA</span></div>
+          <div class="marquee-logo"><span>TATA POWER</span></div>
           <div class="marquee-logo"><span>INFOSYS</span></div>
           <div class="marquee-logo"><span>COGNIZANT</span></div>
           <div class="marquee-logo"><span>WIPRO</span></div>
-          <div class="marquee-logo"><span>L&T</span></div>
+          <div class="marquee-logo"><span>L&T INFRA</span></div>
           <div class="marquee-logo"><span>ACCENTURE</span></div>
           <div class="marquee-logo"><span>CAPGEMINI</span></div>
           <div class="marquee-logo"><span>TECH MAHINDRA</span></div>
           <!-- Duplicate set -->
-          <div class="marquee-logo"><span>TATA</span></div>
+          <div class="marquee-logo"><span>TATA POWER</span></div>
           <div class="marquee-logo"><span>INFOSYS</span></div>
           <div class="marquee-logo"><span>COGNIZANT</span></div>
           <div class="marquee-logo"><span>WIPRO</span></div>
-          <div class="marquee-logo"><span>L&T</span></div>
+          <div class="marquee-logo"><span>L&T INFRA</span></div>
           <div class="marquee-logo"><span>ACCENTURE</span></div>
           <div class="marquee-logo"><span>CAPGEMINI</span></div>
           <div class="marquee-logo"><span>TECH MAHINDRA</span></div>
         </div>
       </div>
 
-      <!-- Placement Stats & Alumni Success Stories Carousel -->
+      <!-- Placement Stats & SVG Graph Dashboard -->
       <div class="placement-grid">
         <div class="placement-stats reveal">
-          <div class="placement-stat-card glass-panel glass-panel-hover">
-            <h3 class="gradient-text"><span id="stat-placement-rate">0</span>%</h3>
-            <p>Annual Placements</p>
+          <!-- Live SVG Placement rate bar graph -->
+          <div class="placement-chart-container glass-panel">
+            <h4 style="font-size: 1.15rem; margin-bottom: 1.25rem;"><i class="fa-solid fa-chart-simple"></i> Placement Performance (Last 3 Years)</h4>
+            <div class="chart-svg-wrapper" style="height: calc(100% - 35px);">
+              <svg class="chart-svg" viewBox="0 0 300 120">
+                <defs>
+                  <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#00d2ff"/>
+                    <stop offset="100%" stop-color="#2563eb"/>
+                  </linearGradient>
+                </defs>
+                <!-- Y lines -->
+                <line x1="20" y1="10" x2="280" y2="10" stroke="var(--border-color)" stroke-width="0.5" stroke-dasharray="4,4"/>
+                <line x1="20" y1="50" x2="280" y2="50" stroke="var(--border-color)" stroke-width="0.5" stroke-dasharray="4,4"/>
+                <line x1="20" y1="90" x2="280" y2="90" stroke="var(--border-color)" stroke-width="0.5" stroke-dasharray="4,4"/>
+                
+                <!-- Bars (Animate with CSS scaleY) -->
+                <rect class="chart-bar" x="50" y="10" width="30" height="90" data-val="88"/>
+                <rect class="chart-bar" x="130" y="10" width="30" height="90" data-val="92"/>
+                <rect class="chart-bar" x="210" y="10" width="30" height="90" data-val="95"/>
+                
+                <!-- Labels -->
+                <text x="65" y="112" fill="var(--text-secondary)" font-size="8" text-anchor="middle" font-weight="bold">2024</text>
+                <text x="145" y="112" fill="var(--text-secondary)" font-size="8" text-anchor="middle" font-weight="bold">2025</text>
+                <text x="225" y="112" fill="var(--text-secondary)" font-size="8" text-anchor="middle" font-weight="bold">2026</text>
+                
+                <text x="65" y="45" fill="var(--text-primary)" font-size="9" font-weight="bold" text-anchor="middle">88%</text>
+                <text x="145" y="35" fill="var(--text-primary)" font-size="9" font-weight="bold" text-anchor="middle">92%</text>
+                <text x="225" y="25" fill="var(--text-primary)" font-size="9" font-weight="bold" text-anchor="middle">95%</text>
+              </svg>
+            </div>
           </div>
-          <div class="placement-stat-card glass-panel glass-panel-hover">
-            <h3 class="gradient-text"><span id="stat-recruiting-partners">0</span>+</h3>
-            <p>Recruiting Corporate Partners</p>
-          </div>
-          <div class="placement-stat-card glass-panel glass-panel-hover">
-            <h3 class="gradient-text">12 LPA</h3>
-            <p>Highest CTC Package</p>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            <div class="placement-stat-card glass-panel glass-panel-hover">
+              <h3 class="gradient-text"><span id="stat-placement-rate">0</span>%</h3>
+              <p>Annual Placements</p>
+            </div>
+            <div class="placement-stat-card glass-panel glass-panel-hover">
+              <h3 class="gradient-text"><span id="stat-recruiting-partners">0</span>+</h3>
+              <p>Corporate Partners</p>
+            </div>
           </div>
         </div>
 
         <!-- Success Stories Slider -->
         <div class="success-stories-wrapper glass-panel reveal">
-          <h3 class="slider-title"><i class="fa-solid fa-user-graduate" style="color: var(--color-primary);"></i> Top Alumni Success Stories</h3>
+          <h3 class="slider-title"><i class="fa-solid fa-user-graduate"></i> Top Alumni Success Stories</h3>
           
           <div class="success-slider" id="successSlider">
             <div class="success-slide active">
@@ -592,17 +771,159 @@
     </div>
   </section>
 
+  <!-- Animated Divider -->
+  <svg class="animated-divider" viewBox="0 0 100 10" preserveAspectRatio="none">
+    <path d="M0 5 Q 25 10, 50 5 T 100 5" fill="none" stroke-width="0.3"/>
+  </svg>
+
+  <!-- Notices & Announcements Section (NEW) -->
+  <section class="notices" id="notices">
+    <div class="container">
+      <div class="section-title-wrapper reveal">
+        <span class="section-tag">Information Desk</span>
+        <h2 class="section-title">Notices & <span class="gradient-text">Announcements</span></h2>
+        <p class="section-desc">Keep track of the latest academic notifications, board exam schedules, recruitment calls, and calendar changes.</p>
+      </div>
+
+      <div class="notices-grid reveal">
+        <!-- Sidebar - Sticky Latest updates -->
+        <div class="notices-sidebar">
+          <div class="latest-ticker-card glass-panel">
+            <h3 class="ticker-heading"><span></span> Latest Updates</h3>
+            <div class="ticker-viewport">
+              <div class="ticker-track" id="tickerTrack">
+                <!-- Items duplicate for looping -->
+                <div class="ticker-item">
+                  <span>Admissions 2026</span>
+                  <p>Direct Second Year Eligibility Checker is now active. Check eligibility status online.</p>
+                </div>
+                <div class="ticker-item">
+                  <span>Placements</span>
+                  <p>TATA Power campus recruitment drive scheduled for final year students on July 10.</p>
+                </div>
+                <div class="ticker-item">
+                  <span>MSBTE Board</span>
+                  <p>Summer Board Theory Exam hall tickets are now available for download in the login portal.</p>
+                </div>
+                <div class="ticker-item">
+                  <span>Academics</span>
+                  <p>AI & ML department launching GPU Cloud Computing guest lecture series next Monday.</p>
+                </div>
+                <!-- Duplicated set for loop -->
+                <div class="ticker-item">
+                  <span>Admissions 2026</span>
+                  <p>Direct Second Year Eligibility Checker is now active. Check eligibility status online.</p>
+                </div>
+                <div class="ticker-item">
+                  <span>Placements</span>
+                  <p>TATA Power campus recruitment drive scheduled for final year students on July 10.</p>
+                </div>
+                <div class="ticker-item">
+                  <span>MSBTE Board</span>
+                  <p>Summer Board Theory Exam hall tickets are now available for download in the login portal.</p>
+                </div>
+                <div class="ticker-item">
+                  <span>Academics</span>
+                  <p>AI & ML department launching GPU Cloud Computing guest lecture series next Monday.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main - Filter/Search and Notice Cards -->
+        <div class="notices-main">
+          <div class="notices-filter-bar">
+            <!-- Search -->
+            <div class="notices-search-wrapper floating-group" style="margin-bottom:0;">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="noticeSearch" class="form-input" placeholder="Search announcements...">
+            </div>
+            
+            <!-- Filter Tags -->
+            <div class="filter-tags">
+              <div class="filter-tag active" data-filter="all">All</div>
+              <div class="filter-tag" data-filter="academic">Academics</div>
+              <div class="filter-tag" data-filter="admissions">Admissions</div>
+              <div class="filter-tag" data-filter="placements">Placements</div>
+            </div>
+          </div>
+
+          <div class="notice-list" id="noticeList">
+            <!-- Notice 1 -->
+            <div class="notice-card glass-panel" data-category="admissions">
+              <div class="notice-date-box">
+                <strong>24</strong>
+                <span>Jun</span>
+              </div>
+              <div class="notice-card-content">
+                <span class="notice-category-badge">Admissions</span>
+                <h4>Direct Second Year Diploma Admissions Open</h4>
+                <p>Applications are invited from qualified 12th Science/Vocational and ITI candidates for direct entry to 2nd Year Diploma Engineering courses. Verify your eligibility using our calculator.</p>
+                <a href="#admissions" class="notice-link">Check Eligibility <i class="fa-solid fa-arrow-right-long"></i></a>
+              </div>
+            </div>
+
+            <!-- Notice 2 -->
+            <div class="notice-card glass-panel" data-category="placements">
+              <div class="notice-date-box">
+                <strong>18</strong>
+                <span>Jun</span>
+              </div>
+              <div class="notice-card-content">
+                <span class="notice-category-badge">Placements</span>
+                <h4>Infosys & Capgemini Consolidated Drive</h4>
+                <p>A consolidated campus drive will be hosted at the main VVP placement hall for Computer, AI & ML and Electronics branches. Registrations close this Friday. Prepare resume copies.</p>
+                <a href="#placement" class="notice-link">Placement Portal <i class="fa-solid fa-arrow-right-long"></i></a>
+              </div>
+            </div>
+
+            <!-- Notice 3 -->
+            <div class="notice-card glass-panel" data-category="academic">
+              <div class="notice-date-box">
+                <strong>12</strong>
+                <span>Jun</span>
+              </div>
+              <div class="notice-card-content">
+                <span class="notice-category-badge">Academics</span>
+                <h4>MSBTE Summer Exam Guidelines & Schedules</h4>
+                <p>The Maharashtra State Board of Technical Education (MSBTE) has issued guidelines for the upcoming summer theory exams. Students must carry board-certified ID cards and check seat numbers.</p>
+                <a href="https://msbte.org.in/" target="_blank" rel="noopener" class="notice-link">Official Board Link <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Animated Divider -->
+  <svg class="animated-divider" viewBox="0 0 100 10" preserveAspectRatio="none">
+    <path d="M0 5 Q 25 0, 50 5 T 100 5" fill="none" stroke-width="0.3"/>
+  </svg>
+
   <!-- Gallery Section -->
   <section class="gallery" id="gallery">
     <div class="container">
       <div class="section-title-wrapper reveal">
         <span class="section-tag">Campus Tour</span>
-        <h2 class="section-title">VISUALIZING V.V.P. CAMPUS</h2>
+        <h2 class="section-title">Visualizing V.V.P. <span class="gradient-text">Campus</span></h2>
         <p class="section-desc">Take a visual tour through our world-class laboratories, library, green campus spaces, and student activities.</p>
       </div>
+
+      <!-- Gallery Filters -->
+      <div class="gallery-filter-bar reveal">
+        <div class="filter-tag active" data-gfilter="all">All Photos</div>
+        <div class="filter-tag" data-gfilter="campus">Campus</div>
+        <div class="filter-tag" data-gfilter="labs">Labs</div>
+        <div class="filter-tag" data-gfilter="sports">Sports</div>
+        <div class="filter-tag" data-gfilter="events">Events</div>
+      </div>
       
-      <div class="gallery-grid">
-        <div class="gallery-item glass-panel reveal">
+      <!-- Masonry Grid -->
+      <div class="gallery-masonry reveal" id="galleryMasonry">
+        <!-- 1 -->
+        <div class="gallery-item glass-panel" data-gcategory="campus">
           <div class="gallery-img-wrapper">
             <img src="assets/images/campus_main.jpg" alt="V.V.P. Main Entrance" onerror="this.src='https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=800&q=80'">
             <div class="gallery-overlay">
@@ -611,7 +932,8 @@
             </div>
           </div>
         </div>
-        <div class="gallery-item glass-panel reveal">
+        <!-- 2 -->
+        <div class="gallery-item glass-panel" data-gcategory="labs">
           <div class="gallery-img-wrapper">
             <img src="assets/images/facilities_labs.jpg" alt="Computer Lab" onerror="this.src='https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=800&q=80'">
             <div class="gallery-overlay">
@@ -620,7 +942,8 @@
             </div>
           </div>
         </div>
-        <div class="gallery-item glass-panel reveal">
+        <!-- 3 -->
+        <div class="gallery-item glass-panel" data-gcategory="labs">
           <div class="gallery-img-wrapper">
             <img src="assets/images/facilities_library.jpg" alt="Central Library" onerror="this.src='https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=800&q=80'">
             <div class="gallery-overlay">
@@ -629,7 +952,8 @@
             </div>
           </div>
         </div>
-        <div class="gallery-item glass-panel reveal">
+        <!-- 4 -->
+        <div class="gallery-item glass-panel" data-gcategory="events">
           <div class="gallery-img-wrapper">
             <img src="assets/images/seminar_hall.jpg" alt="Seminar Hall" onerror="this.src='https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80'">
             <div class="gallery-overlay">
@@ -638,7 +962,8 @@
             </div>
           </div>
         </div>
-        <div class="gallery-item glass-panel reveal">
+        <!-- 5 -->
+        <div class="gallery-item glass-panel" data-gcategory="labs">
           <div class="gallery-img-wrapper">
             <img src="assets/images/mechanical_workshop.jpg" alt="Mechanical Workshop" onerror="this.src='https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80'">
             <div class="gallery-overlay">
@@ -647,7 +972,8 @@
             </div>
           </div>
         </div>
-        <div class="gallery-item glass-panel reveal">
+        <!-- 6 -->
+        <div class="gallery-item glass-panel" data-gcategory="sports">
           <div class="gallery-img-wrapper">
             <img src="assets/images/sports_ground.jpg" alt="Sports Ground" onerror="this.src='https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?auto=format&fit=crop&w=800&q=80'">
             <div class="gallery-overlay">
@@ -665,7 +991,7 @@
     <div class="container">
       <div class="section-title-wrapper reveal">
         <span class="section-tag">Student Speak</span>
-        <h2 class="section-title">Testimonials & Student Reviews</h2>
+        <h2 class="section-title">Testimonials & Student <span class="gradient-text">Reviews</span></h2>
         <p class="section-desc">Hear directly from current and past students about their academic journey, hostel life, and overall learning experience at our institute.</p>
       </div>
 
@@ -678,6 +1004,7 @@
               </div>
               <p class="testimonial-text">"V.V.P. Polytechnic provides the perfect balance of study and activities. The campus atmosphere is supportive, and the teachers go out of their way to explain complex theories in simple ways."</p>
               <div class="testimonial-user">
+                <div class="user-avatar-placeholder">PK</div>
                 <div class="user-info">
                   <strong>Pooja Kamble</strong>
                   <span>3rd Year Student, AI & ML Department</span>
@@ -693,6 +1020,7 @@
               </div>
               <p class="testimonial-text">"The hostel is very secure and clean, making it a safe place for girls. Having high-speed internet in the computer center allowed me to complete all my mini-projects during late hours."</p>
               <div class="testimonial-user">
+                <div class="user-avatar-placeholder">SK</div>
                 <div class="user-info">
                   <strong>Sneha Kulkarni</strong>
                   <span>Alumni, Electronics & Telecom</span>
@@ -708,6 +1036,7 @@
               </div>
               <p class="testimonial-text">"The mechanical workshop facilities here are excellent. Running CNC machine operations personally during practicals is a privilege that most diploma colleges don't offer."</p>
               <div class="testimonial-user">
+                <div class="user-avatar-placeholder">RM</div>
                 <div class="user-info">
                   <strong>Rohan Mane</strong>
                   <span>Alumni, Mechanical Engineering</span>
@@ -731,7 +1060,7 @@
     <div class="container">
       <div class="section-title-wrapper reveal">
         <span class="section-tag">Get in Touch</span>
-        <h2 class="section-title">CONTACT & INQUIRY CENTRE</h2>
+        <h2 class="section-title">Contact & Inquiry <span class="gradient-text">Centre</span></h2>
         <p class="section-desc">Have questions about admissions, fees, or courses? Submit an inquiry, or visit our campus in Solapur.</p>
       </div>
 
@@ -763,8 +1092,8 @@
             </div>
           </div>
 
-          <!-- Maps Embed -->
-          <div style="width:100%; height:200px; border-radius: var(--border-radius-md); overflow:hidden; border: 1px solid var(--border-color);">
+          <!-- Maps Embed inside modern frame -->
+          <div class="map-frame">
             <iframe 
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3802.1648035252874!2d75.87522517597519!3d17.642398595421538!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc5db66eb28114f%3A0xe5a363a0a8f828a2!2sV.V.P.%20Polytechnic%2C%20Solapur!5e0!3m2!1sen!2sin!4v1718385623049!5m2!1sen!2sin" 
               width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
@@ -877,42 +1206,69 @@
 
     <div class="container footer-bottom">
       <p>&copy; 2026 Vidya Vikas Pratishthan Polytechnic, Solapur. All Rights Reserved.</p>
-      <p>Developed with ❤️ as a modern redesign concepts.</p>
+      <p>Developed with ❤️ as a modern redesign concept.</p>
     </div>
   </footer>
 
-  <!-- Dynamic Department Modal Info Overlay -->
+  <!-- Immersive Department Bento Board overlay (REPLACES standard modal) -->
   <div class="modal" id="deptModal">
     <div class="modal-backdrop" id="modalBackdrop"></div>
-    <div class="modal-content">
-      <button class="modal-close" id="modalClose" aria-label="Close modal">&times;</button>
-      <div class="modal-header">
-        <div class="modal-dept-icon" id="modalIcon"><i class="fa-solid fa-code"></i></div>
-        <h3 class="modal-title" id="modalTitle">Department Name</h3>
-      </div>
-      <div class="modal-body">
-        <p id="modalDesc">Detailed description of the program contents and capabilities.</p>
-        
-        <div class="modal-stats">
-          <div class="modal-stat">
-            <h5 id="modalIntake">60</h5>
-            <p>Intake Capacity</p>
-          </div>
-          <div class="modal-stat">
-            <h5 id="modalDuration">3 Years</h5>
-            <p>Course Duration</p>
-          </div>
-          <div class="modal-stat">
-            <h5>MSBTE</h5>
-            <p>Affiliated Board</p>
-          </div>
+    <div class="modal-content" style="display:none;"></div> <!-- Keep original selector references in DOM, but hide them -->
+    
+    <!-- Immersive Dashboard Overlay container -->
+    <div id="deptImmersiveOverlay">
+      <button class="overlay-close-btn" id="modalClose" aria-label="Close details">&times;</button>
+      <div class="container">
+        <div class="dept-overlay-header">
+          <div class="dept-overlay-icon" id="modalIcon"><i class="fa-solid fa-code"></i></div>
+          <h3 class="dept-overlay-title" id="modalTitle">Department Name</h3>
         </div>
 
-        <div>
-          <h4 style="margin-bottom: 0.75rem;">Core Laboratory Infrastructure</h4>
-          <ul id="modalLabsList" style="list-style: inside circle; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.5rem;">
-            <!-- Lab items injected by JS -->
-          </ul>
+        <div class="dept-bento-grid">
+          <!-- Bento Card 1: Overview (Col 2) -->
+          <div class="overlay-bento-card bento-col-2 glass-panel">
+            <h4><i class="fa-solid fa-circle-info"></i> Program Overview</h4>
+            <p id="modalDesc" style="font-size:1.05rem; line-height:1.7; color:var(--text-secondary); margin-bottom:2rem;">Detailed description of the program contents and capabilities.</p>
+            
+            <div class="modal-stats" style="border:1px solid var(--border-color); border-radius:10px; background:rgba(0,0,0,0.15); display:grid; grid-template-columns:repeat(3,1fr); padding:1.5rem; text-align:center;">
+              <div class="modal-stat">
+                <h5 id="modalIntake" style="font-size:1.5rem; color:var(--color-primary); font-weight:800;">60</h5>
+                <p style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); margin-top:0.25rem;">Intake Capacity</p>
+              </div>
+              <div class="modal-stat">
+                <h5 id="modalDuration" style="font-size:1.5rem; color:var(--color-primary); font-weight:800;">3 Years</h5>
+                <p style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); margin-top:0.25rem;">Duration</p>
+              </div>
+              <div class="modal-stat">
+                <h5 style="font-size:1.5rem; color:var(--color-primary); font-weight:800;">MSBTE</h5>
+                <p style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); margin-top:0.25rem;">Affiliated Board</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bento Card 2: Faculty (Col 1) -->
+          <div class="overlay-bento-card bento-col-1 glass-panel">
+            <h4><i class="fa-solid fa-users-gear"></i> Department Faculty</h4>
+            <div class="faculty-list-grid" id="modalFacultyList">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Bento Card 3: Laboratory Infrastructure (Col 2) -->
+          <div class="overlay-bento-card bento-col-2 glass-panel">
+            <h4><i class="fa-solid fa-microchip"></i> Laboratory Showcase</h4>
+            <ul id="modalLabsList" class="labs-mini-list">
+              <!-- Lab items injected by JS -->
+            </ul>
+          </div>
+
+          <!-- Bento Card 4: Projects & Innovations (Col 1) -->
+          <div class="overlay-bento-card bento-col-1 glass-panel">
+            <h4><i class="fa-solid fa-lightbulb"></i> Student Projects</h4>
+            <div class="faculty-list-grid" id="modalProjectsList">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -941,6 +1297,6 @@
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.9/dist/lenis.min.js"></script>
 
   <!-- Client-side Logic Script -->
-  <script src="app.js"></script>
+  <script src="app.js?v=4.0"></script>
 </body>
 </html>

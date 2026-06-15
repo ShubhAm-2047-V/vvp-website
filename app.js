@@ -1,5 +1,5 @@
 /**
- * V.V.P. Polytechnic - Interactive Logic
+ * V.V.P. Polytechnic - Interactive Logic (Premium Redesign)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initInquiryForm();
   initScrollReveal();
   
-  // Custom storytelling engine
+  // Custom storytelling engine (Scrubbing Video)
   initPreloaderAndStory();
 
   // Premium design features
@@ -21,8 +21,12 @@ document.addEventListener('DOMContentLoaded', () => {
   initMagneticButtons();
   initTimelineAnimation();
   initPlacementStats();
+  initPlacementChartAnimation();
   initCustomSliders();
   initGalleryLightbox();
+  initNoticesSearchAndFilter();
+  initGalleryFilters();
+  initScrollProgressBar();
 });
 
 /* ==========================================================================
@@ -30,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
    ========================================================================== */
 function initTheme() {
   const themeToggle = document.getElementById('themeToggle');
-  const currentTheme = localStorage.getItem('theme') || 'light';
+  const currentTheme = localStorage.getItem('theme') || 'light'; // Light theme default on load
 
   document.documentElement.setAttribute('data-theme', currentTheme);
 
@@ -122,7 +126,7 @@ function initStatsCounter() {
 }
 
 /* ==========================================================================
-   4. Department Interactive Modals
+   4. Department Bento Immersive Overlay
    ========================================================================== */
 const DEPT_DETAILS = {
   computer: {
@@ -211,9 +215,70 @@ const DEPT_DETAILS = {
   }
 };
 
+const DEPT_FACULTY = {
+  computer: [
+    { name: "Dr. R. R. Shah", title: "H.O.D. & Professor" },
+    { name: "Prof. S. V. Loni", title: "Assistant Professor" },
+    { name: "Prof. P. G. Mane", title: "Lecturer" }
+  ],
+  aiml: [
+    { name: "Dr. A. S. Patil", title: "H.O.D. & Professor" },
+    { name: "Prof. M. B. Kamble", title: "Assistant Professor" },
+    { name: "Prof. S. R. Joshi", title: "Lecturer" }
+  ],
+  extc: [
+    { name: "Dr. V. R. Pawar", title: "H.O.D. & Professor" },
+    { name: "Prof. K. H. Shinde", title: "Assistant Professor" },
+    { name: "Prof. P. P. Kulkarni", title: "Lecturer" }
+  ],
+  electrical: [
+    { name: "Dr. S. M. Bagal", title: "H.O.D. & Professor" },
+    { name: "Prof. G. D. Dange", title: "Assistant Professor" },
+    { name: "Prof. V. V. Mane", title: "Lecturer" }
+  ],
+  mechanical: [
+    { name: "Dr. S. K. Patil", title: "H.O.D. & Professor" },
+    { name: "Prof. R. T. Vyas", title: "Assistant Professor" },
+    { name: "Prof. A. S. Shinde", title: "Lecturer" }
+  ],
+  civil: [
+    { name: "Dr. M. S. Dhok", title: "H.O.D. & Professor" },
+    { name: "Prof. S. R. Gaikwad", title: "Assistant Professor" },
+    { name: "Prof. P. A. Patil", title: "Lecturer" }
+  ]
+};
+
+const DEPT_PROJECTS = {
+  computer: [
+    { title: "Smart College Chatbot", desc: "NLP chatbot for student guidance" },
+    { title: "IoT Smart Home Automation", desc: "ESP32 sensors linked to database portal" }
+  ],
+  aiml: [
+    { title: "Medical Disease Predictor", desc: "Machine Learning model with Flask UI" },
+    { title: "Smart CCTV Security Monitor", desc: "OpenCV realtime face recognition" }
+  ],
+  extc: [
+    { title: "RFID Automated Toll booth", desc: "Automated billing and barrier gate" },
+    { title: "Wearable Health Tracker Telemetry", desc: "Bio-sensors with Bluetooth telemetry" }
+  ],
+  electrical: [
+    { title: "Solar Grid Coordinator System", desc: "Automated solar-grid load manager" },
+    { title: "Electric Vehicle Battery Balancer", desc: "Telemetry and cell charge balancer" }
+  ],
+  mechanical: [
+    { title: "3-Axis Portable CNC Machine", desc: "Fully operational mechanical milling unit" },
+    { title: "Pneumatic Robotic Handler Arm", desc: "PLC controlled pick and place arm" }
+  ],
+  civil: [
+    { title: "Pervious Rainwater Concrete Blocks", desc: "Rainwater recharging pavements" },
+    { title: "GIS Soil Load Mapping Chart", desc: "Digital Solapur soil parameters chart" }
+  ]
+};
+
 function initDepartmentModal() {
   const deptCards = document.querySelectorAll('.dept-card');
   const modal = document.getElementById('deptModal');
+  const overlay = document.getElementById('deptImmersiveOverlay');
   const backdrop = document.getElementById('modalBackdrop');
   const closeBtn = document.getElementById('modalClose');
 
@@ -223,6 +288,9 @@ function initDepartmentModal() {
   const modalIntake = document.getElementById('modalIntake');
   const modalDuration = document.getElementById('modalDuration');
   const modalLabsList = document.getElementById('modalLabsList');
+  
+  const modalFacultyList = document.getElementById('modalFacultyList');
+  const modalProjectsList = document.getElementById('modalProjectsList');
 
   const openModal = (deptKey) => {
     const data = DEPT_DETAILS[deptKey];
@@ -235,18 +303,61 @@ function initDepartmentModal() {
     modalIntake.innerText = data.intake;
     modalDuration.innerText = data.duration;
     
+    // Labs List
     modalLabsList.innerHTML = '';
     data.labs.forEach(lab => {
       const li = document.createElement('li');
-      li.innerHTML = `<i class="fa-solid fa-circle-chevron-right" style="color:var(--color-accent); font-size:0.875rem; margin-right: 0.5rem;"></i> ${lab}`;
+      li.className = 'lab-item-mini';
+      li.innerHTML = `<i class="fa-solid fa-circle-chevron-right"></i> ${lab}`;
       modalLabsList.appendChild(li);
     });
 
+    // Faculty List
+    modalFacultyList.innerHTML = '';
+    const faculty = DEPT_FACULTY[deptKey] || [];
+    faculty.forEach(fac => {
+      const nameInitials = fac.name.split(" ").slice(1).map(n => n[0]).join("") || "F";
+      const item = document.createElement('div');
+      item.className = 'faculty-mini-card';
+      item.innerHTML = `
+        <div class="faculty-avatar-mini">${nameInitials}</div>
+        <div class="faculty-details-mini">
+          <strong>${fac.name}</strong>
+          <span>${fac.title}</span>
+        </div>
+      `;
+      modalFacultyList.appendChild(item);
+    });
+
+    // Projects List
+    modalProjectsList.innerHTML = '';
+    const projects = DEPT_PROJECTS[deptKey] || [];
+    projects.forEach(proj => {
+      const item = document.createElement('div');
+      item.className = 'faculty-mini-card';
+      item.innerHTML = `
+        <div class="faculty-avatar-mini" style="background: rgba(0,210,255,0.08); border-color: rgba(0,210,255,0.25); color: var(--color-accent);"><i class="fa-solid fa-lightbulb" style="font-size:0.95rem;"></i></div>
+        <div class="faculty-details-mini">
+          <strong>${proj.title}</strong>
+          <span style="display:block; margin-top:0.15rem;">${proj.desc}</span>
+        </div>
+      `;
+      modalProjectsList.appendChild(item);
+    });
+
     modal.classList.add('active');
+    overlay.classList.add('active');
     document.body.style.overflow = 'hidden'; // prevent bg scroll
+    
+    // Trigger GSAP Stagger scale animation for bento overlay cards
+    gsap.fromTo(".overlay-bento-card",
+      { scale: 0.9, opacity: 0, y: 30 },
+      { scale: 1, opacity: 1, y: 0, duration: 0.5, ease: "power2.out", stagger: 0.08, delay: 0.1 }
+    );
   };
 
   const closeModal = () => {
+    overlay.classList.remove('active');
     modal.classList.remove('active');
     document.body.style.overflow = '';
   };
@@ -296,7 +407,6 @@ function initEligibilityChecker() {
     resultDiv.className = 'calc-result'; // Reset classes
     
     if (entry === 'first') {
-      // DTE 1st Year Rules: SSC pass with aggregate >= 35%. Must have math & science.
       if (aggregate >= 35.0) {
         resultDiv.classList.add('success');
         resultDiv.innerHTML = `
@@ -311,12 +421,11 @@ function initEligibilityChecker() {
         `;
       }
     } else {
-      // Direct 2nd Year Rules: HSC Science, VOC, or ITI. Generally >= 35% is required.
       if (aggregate >= 35.0) {
         resultDiv.classList.add('success');
         resultDiv.innerHTML = `
           <h4><i class="fa-solid fa-circle-check"></i> Eligible for Direct 2nd Year</h4>
-          <p>Your 12th/ITI score of <strong>${aggregate}%</strong> meets the eligibility criteria. You are eligible for Direct Second Year admission (entering 3rd Semester) at V.V.P. Polytechnic.</p>
+          <p>Your 12th/ITI score of <strong>${aggregate}%</strong> meets the lateral entry criteria. You are eligible for Direct Second Year admission (entering 3rd Semester) at V.V.P. Polytechnic.</p>
         `;
       } else {
         resultDiv.classList.add('error');
@@ -360,6 +469,7 @@ function initFacilitiesTabs() {
    ========================================================================== */
 function initInquiryForm() {
   const form = document.getElementById('inquiryForm');
+  if (!form) return;
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -368,7 +478,6 @@ function initInquiryForm() {
     const phone = document.getElementById('inqPhone').value;
     const email = document.getElementById('inqEmail').value;
     const dept = document.getElementById('inqDept').value;
-    const message = document.getElementById('inqMessage').value;
 
     // Trigger Success Toast
     showToast(`Thank you, ${name}! Your inquiry regarding ${dept} has been received. Our counselor will call you on ${phone} soon.`, 'success');
@@ -404,31 +513,192 @@ function showToast(message, type = 'success') {
 }
 
 /* ==========================================================================
-   8. Scroll Reveal Animations
+   8. Scroll Reveal Animations (GSAP) — Premium Fluid Edition
    ========================================================================== */
 function initScrollReveal() {
+  // -- Core .reveal elements: smooth float-up with spring easing --
   const reveals = document.querySelectorAll('.reveal');
-  
   reveals.forEach(el => {
     gsap.fromTo(el,
-      { opacity: 0, y: 35 },
+      { opacity: 0, y: 55, filter: 'blur(3px)' },
       {
         opacity: 1,
         y: 0,
-        duration: 0.8,
-        ease: "power2.out",
+        filter: 'blur(0px)',
+        duration: 1.1,
+        ease: "expo.out",
         scrollTrigger: {
           trigger: el,
-          start: "top 85%",
+          start: "top 90%",
           toggleActions: "play none none none"
         }
       }
     );
   });
+
+  // -- Bento grid: staggered spring-pop entrance --
+  const bentoGrid = document.querySelector('.bento-grid');
+  if (bentoGrid) {
+    gsap.fromTo(bentoGrid.querySelectorAll('.bento-card'),
+      { opacity: 0, y: 50, scale: 0.96 },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.95,
+        ease: "back.out(1.6)",
+        stagger: { amount: 0.55, from: "start" },
+        scrollTrigger: { trigger: bentoGrid, start: "top 84%" }
+      }
+    );
+  }
+
+  // -- Dept grid: staggered with alternating y directions --
+  const deptGrid = document.querySelector('.dept-grid');
+  if (deptGrid) {
+    gsap.fromTo(deptGrid.querySelectorAll('.dept-card'),
+      { opacity: 0, y: 60, scale: 0.97 },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.9,
+        ease: "back.out(1.4)",
+        stagger: { amount: 0.5, from: "start" },
+        scrollTrigger: { trigger: deptGrid, start: "top 84%" }
+      }
+    );
+  }
+
+  // -- Leadership grid: cascade left-to-right --
+  const leaderGrid = document.querySelector('.leadership-grid');
+  if (leaderGrid) {
+    gsap.fromTo(leaderGrid.querySelectorAll('.leader-card'),
+      { opacity: 0, x: -40, scale: 0.95 },
+      {
+        opacity: 1,
+        x: 0,
+        scale: 1,
+        duration: 0.9,
+        ease: "power3.out",
+        stagger: 0.18,
+        scrollTrigger: { trigger: leaderGrid, start: "top 85%" }
+      }
+    );
+  }
+
+  // -- Section titles: elegant slide-up (separate from parent .reveal to add depth) --
+  document.querySelectorAll('.section-title-wrapper .section-title').forEach(el => {
+    gsap.fromTo(el,
+      { opacity: 0, y: 28 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.9,
+        delay: 0.2, // slight delay after the wrapper reveal
+        ease: "expo.out",
+        scrollTrigger: { trigger: el, start: "top 92%", toggleActions: "play none none none" }
+      }
+    );
+  });
+
+  // -- Mission cards: scale-up --
+  document.querySelectorAll('.mission-card').forEach((card, i) => {
+    gsap.fromTo(card,
+      { opacity: 0, y: 35, scale: 0.96 },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.8,
+        delay: i * 0.12,
+        ease: "back.out(1.4)",
+        scrollTrigger: { trigger: card, start: "top 90%" }
+      }
+    );
+  });
+
+  // -- About feature cards: slide-up stagger --
+  const aboutFeatGrid = document.querySelector('.about-features-grid');
+  if (aboutFeatGrid) {
+    gsap.fromTo(aboutFeatGrid.querySelectorAll('.about-feat-card'),
+      { opacity: 0, y: 40 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.85,
+        ease: "power3.out",
+        stagger: 0.15,
+        scrollTrigger: { trigger: aboutFeatGrid, start: "top 88%" }
+      }
+    );
+  }
+
+  // -- Placement stat cards: pop-up --
+  document.querySelectorAll('.placement-stat-card').forEach((card, i) => {
+    gsap.fromTo(card,
+      { opacity: 0, y: 30, scale: 0.92 },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.75,
+        delay: i * 0.15,
+        ease: "back.out(1.8)",
+        scrollTrigger: { trigger: card, start: "top 88%" }
+      }
+    );
+  });
+
+  // -- Notice cards: slide from left --
+  document.querySelectorAll('.notice-card').forEach((card, i) => {
+    gsap.fromTo(card,
+      { opacity: 0, x: -30 },
+      {
+        opacity: 1,
+        x: 0,
+        duration: 0.7,
+        delay: i * 0.08,
+        ease: "power3.out",
+        scrollTrigger: { trigger: card, start: "top 92%" }
+      }
+    );
+  });
+
+  // -- Gallery items: scale-up with stagger --
+  const galleryMasonry = document.getElementById('galleryMasonry');
+  if (galleryMasonry) {
+    gsap.fromTo(galleryMasonry.querySelectorAll('.gallery-item'),
+      { opacity: 0, scale: 0.9, y: 30 },
+      {
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        duration: 0.7,
+        ease: "power2.out",
+        stagger: { amount: 0.6, from: "random" },
+        scrollTrigger: { trigger: galleryMasonry, start: "top 85%" }
+      }
+    );
+  }
+
+  // -- Parallax depth on tab images (subtle Y scroll offset) --
+  document.querySelectorAll('.tab-image').forEach(img => {
+    gsap.to(img,{
+      yPercent: -10,
+      ease: "none",
+      scrollTrigger: {
+        trigger: img,
+        start: "top bottom",
+        end: "bottom top",
+        scrub: 1.5
+      }
+    });
+  });
 }
 
 /* ==========================================================================
-   9. Cinematic Video Preloader & GSAP Storytelling Engine
+   9. Cinematic Video Preloader & GSAP Storytelling Engine (PRESERVED)
    ========================================================================== */
 function initPreloaderAndStory() {
   const videoUrl = 'college-entrance.mp4';
@@ -473,8 +743,8 @@ function initPreloaderAndStory() {
   xhr.onprogress = function(e) {
     if (e.lengthComputable) {
       const percentage = Math.round((e.loaded / e.total) * 100);
-      progressBar.style.width = percentage + '%';
-      progressText.innerText = percentage + '%';
+      if (progressBar) progressBar.style.width = percentage + '%';
+      if (progressText) progressText.innerText = percentage + '%';
     }
   };
 
@@ -483,9 +753,7 @@ function initPreloaderAndStory() {
       const videoBlob = this.response;
       const videoBlobUrl = URL.createObjectURL(videoBlob);
       
-      // Hook event before setting src to ensure it triggers correctly
       videoEl.onloadedmetadata = () => {
-        // Hide preloader with a slight delay for smooth exit visual
         setTimeout(() => {
           preloader.classList.add('fade-out');
           setupScrollStorytelling(videoEl);
@@ -539,12 +807,10 @@ function setupScrollStorytelling(video) {
     video.muted = true;
     video.playsInline = true;
     
-    // Play video smoothly at normal speed
     const playPromise = video.play();
     if (playPromise !== undefined) {
       playPromise.catch(err => {
         console.warn("[Performance Warning] Autoplay was blocked by browser policies. Waiting for interaction.", err);
-        // Play on user interaction if blocked
         const playOnInteraction = () => {
           video.play();
           document.removeEventListener('click', playOnInteraction);
@@ -568,12 +834,10 @@ function setupScrollStorytelling(video) {
       seekCount++;
       totalSeekDuration += seekDuration;
 
-      // Debug laggy seeks
       if (seekDuration > 80) {
         console.log(`[Performance Debug] Slow seek detected: ${seekDuration.toFixed(1)}ms`);
       }
 
-      // Check average seek performance after 6 seeks (stabilized statistics)
       if (!isFallbackMode && seekCount >= 6) {
         const avgSeek = totalSeekDuration / seekCount;
         if (avgSeek > 120) {
@@ -586,10 +850,11 @@ function setupScrollStorytelling(video) {
 
   // Initialize Lenis smooth scroll
   const lenis = new Lenis({
-    duration: 1.2,
+    duration: 1.5,
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     smoothWheel: true,
-    wheelMultiplier: 1.0
+    wheelMultiplier: 1.1,
+    touchMultiplier: 1.5
   });
 
   // Connect Lenis to ScrollTrigger
@@ -617,8 +882,8 @@ function setupScrollStorytelling(video) {
       trigger: "#story-pin-container",
       start: "top top",
       end: `+=${scrollLength}`,
-      scrub: isMobile ? 1.0 : 1.5,       // High smoothing for target time interpolation
-      pin: true,        // Pin the container
+      scrub: isMobile ? 1.0 : 1.5,
+      pin: true,
       anticipatePin: 1
     }
   });
@@ -626,14 +891,14 @@ function setupScrollStorytelling(video) {
   // Play the video using a proxy object for smooth rendering
   const videoProxy = { time: 0 };
   tl.to(videoProxy, {
-    time: videoDuration - 0.05, // slightly before end to avoid black frame
-    duration: 8.5,              // Spread video playback across the entire scroll timeline
+    time: videoDuration - 0.05,
+    duration: 8.5,
     ease: "none"
   }, 0);
 
   // Seek throttling render loop using requestAnimationFrame
   function renderVideoScrub() {
-    if (isFallbackMode) return; // Exit loop if in fallback mode to save CPU cycles
+    if (isFallbackMode) return; 
 
     const destTime = videoProxy.time;
     const currTime = video.currentTime;
@@ -664,7 +929,7 @@ function setupScrollStorytelling(video) {
   gsap.set("#scene-3", { opacity: 0, visibility: "hidden" });
   gsap.set("#scene-4", { opacity: 0, visibility: "hidden" });
 
-  // Define transition offsets based on mobile to avoid blank screen gaps
+  // Define transition offsets
   const scene1OutTime = 0.8;
   const scene3InTime = isMobile ? 1.0 : 2.2;
   const scene3OutTime = isMobile ? 2.5 : 4.2;
@@ -674,54 +939,60 @@ function setupScrollStorytelling(video) {
   const scene4OutTime = isMobile ? 5.2 : 8.0;
   const videoFadeTime = isMobile ? 5.3 : 8.5;
 
-  // 3. Scene 1: Logo & Scroll Prompt fades out
+  // Scene 1 fades out
   tl.to("#scene-1", {
     opacity: 0,
     y: -50,
     autoAlpha: 0,
-    ease: "power1.inOut"
-  }, scene1OutTime); // fades out by ~8% of the scroll
+    ease: "power3.inOut"
+  }, scene1OutTime);
 
-  // Scene 2: Camera Enters Gate (camera movement in the video) - happens during scroll space between Scene 1 and 3
-
-  // 4. Scene 3: Welcome text fades in and out
+  // Scene 3 fades in and out
   tl.fromTo("#scene-3", 
     { opacity: 0, y: 50, autoAlpha: 0 },
-    { opacity: 1, y: 0, autoAlpha: 1, ease: "power2.out" },
+    { opacity: 1, y: 0, autoAlpha: 1, ease: "power3.out" },
     scene3InTime
   );
   tl.to("#scene-3", 
-    { opacity: 0, y: -50, autoAlpha: 0, ease: "power2.in" },
+    { opacity: 0, y: -50, autoAlpha: 0, ease: "power3.in" },
     scene3OutTime
   );
 
-  // 5. Scene 4: Statistics section fades in
+  // Scene 4 statistics section fades in
   tl.fromTo("#scene-4", 
     { opacity: 0, y: 50, autoAlpha: 0 },
-    { opacity: 1, y: 0, autoAlpha: 1, ease: "power2.out" },
+    { opacity: 1, y: 0, autoAlpha: 1, ease: "power3.out" },
     scene4InTime
   );
 
-  // Interpolate/tween statistics values dynamically during Scene 4 display
-  const statsVal = { students: 0, courses: 0, faculty: 0, placements: 0 };
+  // Interpolate/tween statistics values dynamically during Scene 4 display (including excellence)
+  const statsVal = { students: 0, courses: 0, faculty: 0, placements: 0, excellence: 0 };
   tl.to(statsVal, {
     students: 1500,
     courses: 6,
     faculty: 50,
     placements: 100,
-    ease: "power1.out",
+    excellence: 19,
+    ease: "power3.out",
     duration: statsDuration,
     onUpdate: () => {
-      document.getElementById('stat-students').innerText = Math.round(statsVal.students) + "+";
-      document.getElementById('stat-courses').innerText = Math.round(statsVal.courses);
-      document.getElementById('stat-faculty').innerText = Math.round(statsVal.faculty) + "+";
-      document.getElementById('stat-placements').innerText = Math.round(statsVal.placements) + "%";
+      const studentsEl = document.getElementById('stat-students');
+      const coursesEl = document.getElementById('stat-courses');
+      const facultyEl = document.getElementById('stat-faculty');
+      const placementsEl = document.getElementById('stat-placements');
+      const excellenceEl = document.getElementById('stat-excellence');
+
+      if (studentsEl) studentsEl.innerText = Math.round(statsVal.students) + "+";
+      if (coursesEl) coursesEl.innerText = Math.round(statsVal.courses);
+      if (facultyEl) facultyEl.innerText = Math.round(statsVal.faculty) + "+";
+      if (placementsEl) placementsEl.innerText = Math.round(statsVal.placements) + "%";
+      if (excellenceEl) excellenceEl.innerText = Math.round(statsVal.excellence) + "+";
     }
   }, statsStartTime);
 
   // Statistics fade out
   tl.to("#scene-4", 
-    { opacity: 0, y: -50, autoAlpha: 0, ease: "power2.in" },
+    { opacity: 0, y: -50, autoAlpha: 0, ease: "power3.in" },
     scene4OutTime
   );
 
@@ -729,23 +1000,26 @@ function setupScrollStorytelling(video) {
   tl.to(".video-container", {
     opacity: 0.15,
     scale: 0.96,
-    ease: "power1.inOut"
+    ease: "power3.inOut"
   }, videoFadeTime);
 
-  // 6. Navigation bar trigger visibility
-  // Navbar fades in when the storytelling ends, and hides when scrolled back up
+  // Navigation bar trigger visibility
   ScrollTrigger.create({
     trigger: "#story-pin-container",
     start: "bottom 20%",
     onEnter: () => {
       const navbar = document.getElementById('mainNavbar');
-      navbar.classList.remove('navbar-hidden');
-      navbar.classList.add('navbar-visible');
+      if (navbar) {
+        navbar.classList.remove('navbar-hidden');
+        navbar.classList.add('navbar-visible');
+      }
     },
     onLeaveBack: () => {
       const navbar = document.getElementById('mainNavbar');
-      navbar.classList.add('navbar-hidden');
-      navbar.classList.remove('navbar-visible');
+      if (navbar) {
+        navbar.classList.add('navbar-hidden');
+        navbar.classList.remove('navbar-visible');
+      }
     }
   });
 
@@ -759,7 +1033,7 @@ function setupScrollStorytelling(video) {
       const targetEl = document.querySelector(targetId);
       if (targetEl) {
         lenis.scrollTo(targetEl, {
-          offset: -80, // Offset for navbar
+          offset: -90, // Offset for redesigned navbar
           duration: 1.5,
           easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
         });
@@ -769,7 +1043,7 @@ function setupScrollStorytelling(video) {
 }
 
 /* ==========================================================================
-   10. Premium Custom Cursor & Mouse Glow Background
+   10. Premium Custom Cursor — Velocity-Aware Spring Cursor
    ========================================================================== */
 function initCursorAndGlow() {
   const cursor = document.getElementById('custom-cursor');
@@ -785,29 +1059,52 @@ function initCursorAndGlow() {
     return;
   }
 
-  // Use GSAP quickTo for ultra-smooth 60fps cursor movement
-  const cursorX = gsap.quickTo(cursor, "x", { duration: 0.15, ease: "power3.out" });
-  const cursorY = gsap.quickTo(cursor, "y", { duration: 0.15, ease: "power3.out" });
-  
-  window.addEventListener('mousemove', (e) => {
-    cursorX(e.clientX);
-    cursorY(e.clientY);
-    
-    // Pass coordinates to background radial glow CSS variables
-    document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
-    document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
-  });
+  // Use GSAP quickTo for smooth butter cursor — dot is fast, ring lags behind
+  const cursorDot = cursor?.querySelector('.cursor-dot');
+  const cursorRing = cursor?.querySelector('.cursor-ring');
 
-  // Cursor scaling interactions on hover
-  const hoverables = document.querySelectorAll('a, button, .dept-card, .tab-btn, .gallery-item, select, input, textarea, .timeline-content');
+  if (cursorDot) {
+    const dotX = gsap.quickTo(cursorDot, "x", { duration: 0.08, ease: "power3.out" });
+    const dotY = gsap.quickTo(cursorDot, "y", { duration: 0.08, ease: "power3.out" });
+    const ringX = gsap.quickTo(cursorRing || cursor, "x", { duration: 0.4, ease: "expo.out" });
+    const ringY = gsap.quickTo(cursorRing || cursor, "y", { duration: 0.4, ease: "expo.out" });
+
+    window.addEventListener('mousemove', (e) => {
+      dotX(e.clientX);
+      dotY(e.clientY);
+      ringX(e.clientX);
+      ringY(e.clientY);
+      
+      document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
+      document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
+    });
+  } else {
+    // Fallback: full cursor element
+    const cursorX = gsap.quickTo(cursor, "x", { duration: 0.18, ease: "power3.out" });
+    const cursorY = gsap.quickTo(cursor, "y", { duration: 0.18, ease: "power3.out" });
+
+    window.addEventListener('mousemove', (e) => {
+      cursorX(e.clientX);
+      cursorY(e.clientY);
+      document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
+      document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
+    });
+  }
+
+  // Scale cursor on hoverable elements
+  const hoverables = document.querySelectorAll('a, button, .dept-card, .tab-btn, .gallery-item, select, input, textarea, .timeline-content, .bento-card, .filter-tag, .overlay-close-btn, .notice-card');
   hoverables.forEach(el => {
-    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+    el.addEventListener('mouseenter', () => {
+      if (cursor) cursor.classList.add('hover');
+    });
+    el.addEventListener('mouseleave', () => {
+      if (cursor) cursor.classList.remove('hover');
+    });
   });
 }
 
 /* ==========================================================================
-   11. 3D Tilt Effect on Premium Cards
+   11. 3D Tilt Effect on Premium Cards — Spring Physics
    ========================================================================== */
 function initCardTilt() {
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
@@ -816,7 +1113,7 @@ function initCardTilt() {
                    
   if (isMobile) return;
 
-  const cards = document.querySelectorAll('.dept-card, .about-feat-card, .placement-stat-card, .testimonial-card');
+  const cards = document.querySelectorAll('.dept-card, .about-feat-card, .placement-stat-card, .testimonial-card, .bento-card, .leader-card, .notice-card');
   cards.forEach(card => {
     card.addEventListener('mousemove', (e) => {
       const rect = card.getBoundingClientRect();
@@ -826,15 +1123,15 @@ function initCardTilt() {
       const xc = rect.width / 2;
       const yc = rect.height / 2;
       
-      const rotateX = -(y - yc) / 10;
-      const rotateY = (x - xc) / 10;
+      const rotateX = -(y - yc) / 14;
+      const rotateY = (x - xc) / 14;
       
       gsap.to(card, {
         rotateX: rotateX,
         rotateY: rotateY,
-        transformPerspective: 800,
+        transformPerspective: 900,
         ease: "power2.out",
-        duration: 0.4,
+        duration: 0.35,
         overwrite: "auto"
       });
     });
@@ -843,8 +1140,8 @@ function initCardTilt() {
       gsap.to(card, {
         rotateX: 0,
         rotateY: 0,
-        ease: "power2.out",
-        duration: 0.5,
+        ease: "elastic.out(1, 0.5)",
+        duration: 1.2,
         overwrite: "auto"
       });
     });
@@ -898,7 +1195,6 @@ function initTimelineAnimation() {
   
   if (!timelineLine || timelineItems.length === 0) return;
 
-  // Animate timeline vertical line stretching
   gsap.fromTo(timelineLine, 
     { scaleY: 0 },
     { 
@@ -913,7 +1209,6 @@ function initTimelineAnimation() {
     }
   );
 
-  // Animate timeline nodes and contents sliding in
   timelineItems.forEach(item => {
     const dot = item.querySelector('.timeline-dot');
     const content = item.querySelector('.timeline-content');
@@ -962,6 +1257,23 @@ function initPlacementStats() {
     onUpdate: () => {
       placementRate.innerText = Math.round(countData.rate);
       partnersCount.innerText = Math.round(countData.partners);
+    }
+  });
+}
+
+/* ==========================================================================
+   14b. Placement SVG Chart Animation
+   ========================================================================== */
+function initPlacementChartAnimation() {
+  const container = document.querySelector('.placement-chart-container');
+  const bars = document.querySelectorAll('.chart-bar');
+  if (!container || !bars.length) return;
+
+  ScrollTrigger.create({
+    trigger: container,
+    start: "top 85%",
+    onEnter: () => {
+      container.classList.add('chart-active');
     }
   });
 }
@@ -1081,20 +1393,34 @@ function initGalleryLightbox() {
     const descEl = item.querySelector('p');
     
     if (imgEl) {
+      // Prevent push duplicates when refiltering
+      item.addEventListener('click', () => {
+        // Find correct current index from active list
+        const activeItems = Array.from(document.querySelectorAll('.gallery-item:not(.hidden)'));
+        const indexInActiveList = activeItems.indexOf(item);
+        if (indexInActiveList !== -1) {
+          openLightbox(activeItems, indexInActiveList);
+        }
+      });
+    }
+  });
+
+  function openLightbox(activeItems, idx) {
+    activeIndex = idx;
+    
+    // Build temporary list of active images
+    images.length = 0;
+    activeItems.forEach(item => {
+      const imgEl = item.querySelector('img');
+      const titleEl = item.querySelector('h4');
+      const descEl = item.querySelector('p');
       images.push({
         src: imgEl.getAttribute('src') || imgEl.src,
         title: titleEl ? titleEl.innerText : 'Campus View',
         desc: descEl ? descEl.innerText : 'VVP Polytechnic Campus'
       });
+    });
 
-      item.addEventListener('click', () => {
-        openLightbox(index);
-      });
-    }
-  });
-
-  function openLightbox(index) {
-    activeIndex = index;
     updateLightboxContent();
     lightbox.classList.add('active');
     
@@ -1120,6 +1446,7 @@ function initGalleryLightbox() {
   }
 
   function nextImage() {
+    if (images.length <= 1) return;
     activeIndex = (activeIndex + 1) % images.length;
     gsap.to("#lightboxImg", {
       opacity: 0,
@@ -1133,6 +1460,7 @@ function initGalleryLightbox() {
   }
 
   function prevImage() {
+    if (images.length <= 1) return;
     activeIndex = (activeIndex - 1 + images.length) % images.length;
     gsap.to("#lightboxImg", {
       opacity: 0,
@@ -1155,5 +1483,107 @@ function initGalleryLightbox() {
     if (e.key === 'Escape') closeLightbox();
     if (e.key === 'ArrowRight') nextImage();
     if (e.key === 'ArrowLeft') prevImage();
+  });
+}
+
+/* ==========================================================================
+   17. Notices Search & Category Filters (NEW)
+   ========================================================================== */
+function initNoticesSearchAndFilter() {
+  const searchInput = document.getElementById('noticeSearch');
+  const filterTags = document.querySelectorAll('.filter-tag[data-filter]');
+  const noticeCards = document.querySelectorAll('.notice-card');
+  
+  if (!noticeCards.length) return;
+  
+  let currentSearchQuery = "";
+  let currentCategory = "all";
+  
+  const filterNotices = () => {
+    noticeCards.forEach(card => {
+      const title = card.querySelector('h4').innerText.toLowerCase();
+      const desc = card.querySelector('p').innerText.toLowerCase();
+      const category = card.getAttribute('data-category');
+      
+      const matchesSearch = title.includes(currentSearchQuery) || desc.includes(currentSearchQuery);
+      const matchesCategory = currentCategory === "all" || category === currentCategory;
+      
+      if (matchesSearch && matchesCategory) {
+        card.style.display = "flex";
+        gsap.fromTo(card, { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.35, ease: "power1.out" });
+      } else {
+        card.style.display = "none";
+      }
+    });
+  };
+  
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      currentSearchQuery = e.target.value.toLowerCase();
+      filterNotices();
+    });
+  }
+  
+  filterTags.forEach(tag => {
+    tag.addEventListener('click', () => {
+      filterTags.forEach(t => t.classList.remove('active'));
+      tag.classList.add('active');
+      currentCategory = tag.getAttribute('data-filter');
+      filterNotices();
+    });
+  });
+}
+
+/* ==========================================================================
+   18. Gallery Category Filters (NEW)
+   ========================================================================== */
+function initGalleryFilters() {
+  const gFilterTags = document.querySelectorAll('.filter-tag[data-gfilter]');
+  const galleryItems = document.querySelectorAll('.gallery-item');
+  const masonry = document.getElementById('galleryMasonry');
+  
+  if (!galleryItems.length || !gFilterTags.length) return;
+  
+  gFilterTags.forEach(tag => {
+    tag.addEventListener('click', () => {
+      gFilterTags.forEach(t => t.classList.remove('active'));
+      tag.classList.add('active');
+      
+      const filterValue = tag.getAttribute('data-gfilter');
+      
+      galleryItems.forEach(item => {
+        const itemCategory = item.getAttribute('data-gcategory');
+        
+        if (filterValue === 'all' || itemCategory === filterValue) {
+          item.classList.remove('hidden');
+          gsap.fromTo(item, 
+            { scale: 0.9, opacity: 0 },
+            { scale: 1, opacity: 1, duration: 0.45, ease: "power2.out" }
+          );
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+      
+      // Trigger ScrollTrigger refresh to prevent visual gaps in masonry layouts
+      ScrollTrigger.refresh();
+    });
+  });
+}
+
+/* ==========================================================================
+   19. Global Scroll Progress Bar (NEW)
+   ========================================================================== */
+function initScrollProgressBar() {
+  const progressBar = document.getElementById('scroll-progress');
+  if (!progressBar) return;
+  
+  ScrollTrigger.create({
+    start: 0,
+    end: "max",
+    onUpdate: (self) => {
+      const progress = Math.round(self.progress * 100);
+      progressBar.style.width = progress + '%';
+    }
   });
 }
