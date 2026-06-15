@@ -611,13 +611,13 @@ function setupScrollStorytelling(video) {
   video.pause();
 
   // Create the GSAP scroll-bound timeline with scrub smoothing (shorter on mobile)
-  const scrollLength = isMobile ? 1800 : 5000;
+  const scrollLength = isMobile ? 1200 : 5000;
   const tl = gsap.timeline({
     scrollTrigger: {
       trigger: "#story-pin-container",
       start: "top top",
       end: `+=${scrollLength}`,
-      scrub: 1.5,       // High smoothing for target time interpolation
+      scrub: isMobile ? 1.0 : 1.5,       // High smoothing for target time interpolation
       pin: true,        // Pin the container
       anticipatePin: 1
     }
@@ -664,13 +664,23 @@ function setupScrollStorytelling(video) {
   gsap.set("#scene-3", { opacity: 0, visibility: "hidden" });
   gsap.set("#scene-4", { opacity: 0, visibility: "hidden" });
 
+  // Define transition offsets based on mobile to avoid blank screen gaps
+  const scene1OutTime = 0.8;
+  const scene3InTime = isMobile ? 1.0 : 2.2;
+  const scene3OutTime = isMobile ? 2.5 : 4.2;
+  const scene4InTime = isMobile ? 2.8 : 5.2;
+  const statsDuration = isMobile ? 1.4 : 1.8;
+  const statsStartTime = isMobile ? 3.0 : 5.5;
+  const scene4OutTime = isMobile ? 5.2 : 8.0;
+  const videoFadeTime = isMobile ? 5.3 : 8.5;
+
   // 3. Scene 1: Logo & Scroll Prompt fades out
   tl.to("#scene-1", {
     opacity: 0,
     y: -50,
     autoAlpha: 0,
     ease: "power1.inOut"
-  }, 0.8); // fades out by ~8% of the scroll
+  }, scene1OutTime); // fades out by ~8% of the scroll
 
   // Scene 2: Camera Enters Gate (camera movement in the video) - happens during scroll space between Scene 1 and 3
 
@@ -678,18 +688,18 @@ function setupScrollStorytelling(video) {
   tl.fromTo("#scene-3", 
     { opacity: 0, y: 50, autoAlpha: 0 },
     { opacity: 1, y: 0, autoAlpha: 1, ease: "power2.out" },
-    2.2
+    scene3InTime
   );
   tl.to("#scene-3", 
     { opacity: 0, y: -50, autoAlpha: 0, ease: "power2.in" },
-    4.2
+    scene3OutTime
   );
 
   // 5. Scene 4: Statistics section fades in
   tl.fromTo("#scene-4", 
     { opacity: 0, y: 50, autoAlpha: 0 },
     { opacity: 1, y: 0, autoAlpha: 1, ease: "power2.out" },
-    5.2
+    scene4InTime
   );
 
   // Interpolate/tween statistics values dynamically during Scene 4 display
@@ -700,19 +710,19 @@ function setupScrollStorytelling(video) {
     faculty: 50,
     placements: 100,
     ease: "power1.out",
-    duration: 1.8,
+    duration: statsDuration,
     onUpdate: () => {
       document.getElementById('stat-students').innerText = Math.round(statsVal.students) + "+";
       document.getElementById('stat-courses').innerText = Math.round(statsVal.courses);
       document.getElementById('stat-faculty').innerText = Math.round(statsVal.faculty) + "+";
       document.getElementById('stat-placements').innerText = Math.round(statsVal.placements) + "%";
     }
-  }, 5.5);
+  }, statsStartTime);
 
   // Statistics fade out
   tl.to("#scene-4", 
     { opacity: 0, y: -50, autoAlpha: 0, ease: "power2.in" },
-    8.0
+    scene4OutTime
   );
 
   // Fade and scale down the video container slightly at the transition end
@@ -720,7 +730,7 @@ function setupScrollStorytelling(video) {
     opacity: 0.15,
     scale: 0.96,
     ease: "power1.inOut"
-  }, 8.5);
+  }, videoFadeTime);
 
   // 6. Navigation bar trigger visibility
   // Navbar fades in when the storytelling ends, and hides when scrolled back up
