@@ -2601,6 +2601,17 @@ textarea.form-input {
   font-weight: 600;
 }
 
+.footer-bottom a {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 700;
+  transition: color var(--transition-fast);
+}
+
+.footer-bottom a:hover {
+  color: var(--color-accent);
+}
+
 /* ==========================================================================
    Toast Notifications
    ========================================================================== */
