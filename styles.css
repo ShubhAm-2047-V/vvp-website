@@ -2601,15 +2601,26 @@ textarea.form-input {
   font-weight: 600;
 }
 
-.footer-bottom a {
-  color: var(--color-primary);
-  text-decoration: none;
-  font-weight: 700;
-  transition: color var(--transition-fast);
+.footer-creator {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1rem;
 }
 
-.footer-bottom a:hover {
+.footer-creator a {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  transition: all var(--transition-fast);
+  display: inline-block;
+}
+
+.footer-creator a:hover {
   color: var(--color-accent);
+  transform: translateY(-2px);
+  filter: drop-shadow(0 2px 8px rgba(14, 165, 233, 0.3));
 }
 
 /* ==========================================================================
