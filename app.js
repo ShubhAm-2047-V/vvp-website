@@ -53,7 +53,7 @@ function initTheme() {
 function initMobileMenu() {
   const hamburger = document.getElementById('hamburger');
   const navMenu = document.getElementById('navMenu');
-  const navLinks = document.querySelectorAll('.nav-link');
+  const menuItems = document.querySelectorAll('.nav-link, .menu-cta');
 
   hamburger.addEventListener('click', () => {
     navMenu.classList.toggle('open');
@@ -72,8 +72,8 @@ function initMobileMenu() {
     }
   });
 
-  // Close menu when clicking a nav link
-  navLinks.forEach(link => {
+  // Close menu when clicking a nav link or CTA inside it
+  menuItems.forEach(link => {
     link.addEventListener('click', () => {
       navMenu.classList.remove('open');
       hamburger.classList.remove('active');

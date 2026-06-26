@@ -2880,6 +2880,11 @@ html.lenis, html.lenis body {
     opacity: 1 !important;
   }
 
+  /* Reduce excessive section spacing on mobile */
+  .about, .why-choose-us, .departments, .admissions, .campus-life, .placement, .notices, .gallery, .testimonials, .contact {
+    padding: 60px 0 !important;
+  }
+
   .container {
     padding: 0 1.5rem;
   }
@@ -2906,6 +2911,11 @@ html.lenis, html.lenis body {
     width: 40px;
     height: 40px;
     font-size: 1.1rem;
+  }
+
+  /* Hide desktop CTA on mobile viewports to prevent overcrowding */
+  .nav-cta {
+    display: none !important;
   }
 
   .hamburger {
@@ -2978,13 +2988,24 @@ html.lenis, html.lenis body {
   .tab-details h3 {
     font-size: 1.85rem;
   }
+
+  .tab-details p {
+    margin-bottom: 2rem !important;
+  }
+
+  .tab-image {
+    height: 280px !important;
+  }
   
   .footer-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 3.5rem;
   }
 
-  /* Video scene typography */
+  /* Video scene typography and margins */
+  .scene-content {
+    padding: 2rem !important;
+  }
   .scene-title-main {
     font-size: 3.25rem !important;
   }
@@ -2993,10 +3014,55 @@ html.lenis, html.lenis body {
   }
   .story-stats-grid {
     grid-template-columns: repeat(2, 1fr) !important;
-    gap: 1rem !important;
+    gap: 0.75rem !important;
+    margin-top: 2rem !important;
+  }
+  .story-stat-card {
+    padding: 1rem !important;
   }
   .story-stat-number {
-    font-size: 2.5rem !important;
+    font-size: 2rem !important;
+  }
+  .story-stat-label {
+    font-size: 0.8rem !important;
+  }
+
+  /* Bento Layout scaling */
+  .bento-card {
+    padding: 1.5rem !important;
+  }
+
+  /* Placements graph and cards */
+  .placement-chart-container {
+    padding: 1.25rem !important;
+    height: 180px !important;
+  }
+  .success-stories-wrapper {
+    padding: 2rem !important;
+  }
+
+  /* Testimonials */
+  .testimonial-card {
+    padding: 2.5rem 2rem !important;
+  }
+  .testimonial-text {
+    font-size: 1.2rem !important;
+  }
+
+  /* Contact and Inquiry Form */
+  .contact-form-wrapper {
+    padding: 2.5rem 2rem !important;
+  }
+  .contact-form-wrapper h3 {
+    font-size: 1.85rem !important;
+  }
+  .contact-form-wrapper > p {
+    margin-bottom: 2rem !important;
+  }
+
+  /* Double-check to hide mouse cursor effects on touchscreens */
+  #custom-cursor, #bg-glow {
+    display: none !important;
   }
 
   /* Notices */
@@ -3070,6 +3136,76 @@ html.lenis, html.lenis body {
   }
   .timeline-content {
     padding: 1.5rem 1.75rem;
+  }
+
+  /* Fine-tuning cinematic video scene layouts for small smartphones */
+  .scene-content {
+    padding: 1rem !important;
+  }
+  .scene-title-main {
+    font-size: 2.25rem !important;
+  }
+  .scene-heading {
+    font-size: 1.75rem !important;
+  }
+  .scene-subtitle-main {
+    font-size: 1rem !important;
+  }
+  .story-stats-grid {
+    grid-template-columns: 1fr !important; /* Stack stats on tiny devices */
+  }
+  .story-stat-card {
+    padding: 0.75rem !important;
+  }
+  .story-stat-number {
+    font-size: 1.65rem !important;
+  }
+  .story-stat-label {
+    font-size: 0.75rem !important;
+  }
+
+  /* Bento adjustments */
+  .bento-card {
+    padding: 1.25rem !important;
+  }
+
+  /* Department overlays stats stack */
+  .modal-stats {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+    padding: 1rem !important;
+  }
+  .modal-stat h5 {
+    font-size: 1.25rem !important;
+  }
+
+  /* Notice list column adjustment */
+  .notice-card {
+    flex-direction: column !important;
+    padding: 1.25rem !important;
+    gap: 1.25rem !important;
+  }
+  .notice-date-box {
+    width: 60px !important;
+    height: 60px !important;
+  }
+
+  /* Wrap categories & tags */
+  .gallery-filter-bar, .filter-tags {
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+    margin-bottom: 2rem !important;
+  }
+
+  .placement-stats > div {
+    grid-template-columns: 1fr !important;
+  }
+
+  .tab-image {
+    height: 250px !important;
+  }
+  .tab-img-fallback {
+    padding: 1.5rem !important;
   }
 }
 
@@ -3389,3 +3525,63 @@ body::before {
   box-shadow: 0 12px 35px -10px rgba(31, 38, 135, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.6);
   border-color: var(--border-color-hover);
 }
+
+/* --- Custom Spring-Cursor Base Styling & Ambient Glow --- */
+#custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-primary);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+  mix-blend-mode: difference;
+}
+
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  border: 1.5px solid var(--color-primary);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  transition: width 0.3s var(--ease-spring), height 0.3s var(--ease-spring), border-color 0.3s ease, background-color 0.3s ease;
+}
+
+#custom-cursor.hover .cursor-ring {
+  width: 60px;
+  height: 60px;
+  border-color: var(--color-accent);
+  background-color: rgba(var(--color-accent-rgb), 0.1);
+}
+
+#bg-glow {
+  position: fixed;
+  top: var(--mouse-y, -1000px);
+  left: var(--mouse-x, -1000px);
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(var(--color-primary-rgb), 0.08) 0%, transparent 70%);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  mix-blend-mode: screen;
+}
+
