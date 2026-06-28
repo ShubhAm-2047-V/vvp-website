@@ -23,14 +23,16 @@
   --color-primary: #2563eb;      /* Royal Blue / Sapphire */
   --color-primary-rgb: 37, 99, 235;
   --color-secondary: #1d4ed8;    /* Deep Royal Blue */
-  --color-accent: #0ea5e9;       /* Light Sky Blue */
-  --color-accent-rgb: 14, 165, 233;
+  --color-tertiary: #7c3aed;     /* Premium Violet */
+  --color-tertiary-rgb: 124, 58, 237;
+  --color-accent: #d4af37;       /* Metallic Gold Accent */
+  --color-accent-rgb: 212, 175, 55;
   --color-success: #059669;      /* Emerald Green */
   --color-warning: #d97706;      /* Warm Amber */
   
   /* Gradients */
-  --grad-primary: linear-gradient(135deg, var(--color-primary) 0%, #3b82f6 50%, var(--color-accent) 100%);
-  --grad-accent: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%);
+  --grad-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-tertiary) 50%, var(--color-accent) 100%);
+  --grad-accent: linear-gradient(135deg, #d4af37 0%, #ffd700 100%);
   --grad-dark: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
   --grad-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.3) 100%);
   
@@ -70,19 +72,21 @@
   --color-primary: #2563eb;      /* Royal Blue */
   --color-primary-rgb: 37, 99, 235;
   --color-secondary: #1d4ed8;    /* Deep Royal Blue */
-  --color-accent: #00d2ff;       /* Electric Cyan */
-  --color-accent-rgb: 0, 210, 255;
+  --color-tertiary: #8b5cf6;     /* Electric Purple/Violet */
+  --color-tertiary-rgb: 139, 92, 246;
+  --color-accent: #ffd700;       /* Premium Metallic Gold */
+  --color-accent-rgb: 255, 215, 0;
   --color-success: #10b981;      /* Emerald */
   --color-warning: #f59e0b;      /* Amber */
   
-  --grad-primary: linear-gradient(135deg, var(--color-primary) 0%, #3b82f6 50%, var(--color-accent) 100%);
-  --grad-accent: linear-gradient(135deg, #1d4ed8 0%, var(--color-primary) 100%);
+  --grad-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-tertiary) 50%, var(--color-accent) 100%);
+  --grad-accent: linear-gradient(135deg, var(--color-tertiary) 0%, var(--color-accent) 100%);
   --grad-dark: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
   --grad-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
   
   --card-shadow: 0 15px 45px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.08);
   --nav-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
-  --glow-shadow: 0 0 30px rgba(37, 99, 235, 0.25);
+  --glow-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
 }
 
 /* --- Base & Scroll Reset --- */
@@ -184,7 +188,7 @@ h1, h2, h3, h4, h5, h6 {
 .blob-3 {
   width: 500px;
   height: 500px;
-  background: var(--color-accent);
+  background: var(--color-tertiary); /* Updated to tertiary purple */
   top: 40%;
   right: 10%;
   animation: float-slow 40s infinite alternate;
@@ -193,7 +197,7 @@ h1, h2, h3, h4, h5, h6 {
 .blob-4 {
   width: 450px;
   height: 450px;
-  background: #1d4ed8;
+  background: var(--color-accent); /* Golden Glow Blob */
   top: 15%;
   left: 20%;
   animation: float-slow 32s infinite alternate-reverse;
@@ -205,8 +209,35 @@ h1, h2, h3, h4, h5, h6 {
   100% { transform: translate(-40px, -60px) scale(0.9); }
 }
 
+/* --- Scrolling Tech Grid Background --- */
+.grid-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: 
+    linear-gradient(to right, rgba(37, 99, 235, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(37, 99, 235, 0.035) 1px, transparent 1px);
+  background-size: 60px 60px;
+  z-index: -2;
+  pointer-events: none;
+  animation: grid-scroll 75s linear infinite;
+  will-change: background-position;
+}
+[data-theme="dark"] .grid-background {
+  background-image: 
+    linear-gradient(to right, rgba(255, 215, 0, 0.015) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 215, 0, 0.015) 1px, transparent 1px);
+}
+@keyframes grid-scroll {
+  0% { background-position: 0 0; }
+  100% { background-position: 120px 120px; }
+}
+
 /* --- Glassmorphism Framework --- */
 .glass-panel {
+  position: relative;
   background: var(--bg-card);
   backdrop-filter: var(--backdrop-blur);
   -webkit-backdrop-filter: var(--backdrop-blur);
@@ -218,6 +249,51 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow var(--transition-slow),
     transform var(--transition-slow);
   will-change: transform;
+}
+
+/* Mouse-tracked glow effect border wrapper */
+.glass-panel::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(
+    300px circle at var(--card-mouse-x, 0px) var(--card-mouse-y, 0px),
+    rgba(255, 255, 255, 0.22),
+    transparent 60%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 1;
+  transition: opacity 0.5s ease;
+}
+
+[data-theme="dark"] .glass-panel::before {
+  background: radial-gradient(
+    350px circle at var(--card-mouse-x, 0px) var(--card-mouse-y, 0px),
+    rgba(var(--color-accent-rgb), 0.35) 0%,
+    rgba(var(--color-tertiary-rgb), 0.22) 35%,
+    rgba(var(--color-primary-rgb), 0.1) 70%,
+    transparent 100%
+  );
+}
+
+[data-theme="light"] .glass-panel::before {
+  background: radial-gradient(
+    350px circle at var(--card-mouse-x, 0px) var(--card-mouse-y, 0px),
+    rgba(var(--color-accent-rgb), 0.25) 0%,
+    rgba(var(--color-tertiary-rgb), 0.15) 40%,
+    rgba(var(--color-primary-rgb), 0.08) 70%,
+    transparent 100%
+  );
+}
+
+.glass-panel:hover::before {
+  opacity: 1;
 }
 
 .glass-panel-hover:hover {
@@ -334,11 +410,14 @@ h1, h2, h3, h4, h5, h6 {
 .animated-divider path {
   stroke: var(--color-primary);
   stroke-dasharray: 10, 10;
-  animation: dash 30s linear infinite;
+  /* Color-shift animation, speed dashoffset is updated dynamically via GSAP ticker */
+  animation: wave-color-shift 12s linear infinite alternate;
 }
 
-@keyframes dash {
-  to { stroke-dashoffset: -1000; }
+@keyframes wave-color-shift {
+  0% { stroke: var(--color-primary); }
+  50% { stroke: var(--color-tertiary); }
+  100% { stroke: var(--color-accent); }
 }
 
 /* --- Header / Navigation --- */
@@ -360,9 +439,9 @@ h1, h2, h3, h4, h5, h6 {
   transition:
     transform 0.7s var(--ease-smooth),
     opacity 0.7s var(--ease-smooth),
-    background 0.4s ease,
-    border-color 0.4s ease,
-    box-shadow 0.4s ease;
+    background 0.5s var(--ease-smooth),
+    border-color 0.5s var(--ease-smooth),
+    box-shadow 0.5s var(--ease-smooth);
 }
 
 [data-theme="dark"] .navbar {
@@ -592,6 +671,60 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateX(-50%) translateY(0) scale(1);
   opacity: 1;
   pointer-events: auto;
+}
+
+/* Hero Cinematic State */
+.navbar-hero {
+  transform: translateX(-50%) translateY(0) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: none;
+}
+[data-theme="dark"] .navbar-hero {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+.navbar-hero .nav-link {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+.navbar-hero .nav-link:hover {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+.navbar-hero .logo-title {
+  color: #fff !important;
+}
+.navbar-hero .logo-sub {
+  color: rgba(255, 255, 255, 0.55) !important;
+}
+.navbar-hero .theme-toggle {
+  color: #fff !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+.navbar-hero .theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+.navbar-hero .hamburger span {
+  background: #fff !important;
+}
+.navbar-hero .btn-primary.nav-cta {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: none !important;
+}
+.navbar-hero .btn-primary.nav-cta:hover {
+  background: #fff;
+  color: var(--color-primary);
+  transform: translateY(-2px);
+}
+
+/* Layout Clipping to prevent rendering overflows */
+.why-choose-us, .placement, .departments, .notices, .gallery, .testimonials, .contact {
+  overflow: clip;
 }
 
 /* ==========================================================================

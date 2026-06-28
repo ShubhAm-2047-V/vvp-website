@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Premium design features
   initCursorAndGlow();
+  initGlassGlow();
   initCardTilt();
   initMagneticButtons();
   initTimelineAnimation();
@@ -27,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initNoticesSearchAndFilter();
   initGalleryFilters();
   initScrollProgressBar();
+  initScrollVelocityWaves();
 });
 
 /* ==========================================================================
@@ -850,11 +852,12 @@ function setupScrollStorytelling(video) {
 
   // Initialize Lenis smooth scroll
   const lenis = new Lenis({
-    duration: 1.5,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    duration: 2.2, // increased duration for ultra-fluid glide
+    easing: (t) => 1 - Math.pow(1 - t, 4), // quartic out easing (smooth deceleration)
     smoothWheel: true,
-    wheelMultiplier: 1.1,
-    touchMultiplier: 1.5
+    wheelMultiplier: 1.0,
+    touchMultiplier: 1.5,
+    infinite: false
   });
 
   // Connect Lenis to ScrollTrigger
@@ -896,19 +899,23 @@ function setupScrollStorytelling(video) {
     ease: "none"
   }, 0);
 
-  // Seek throttling render loop using requestAnimationFrame
+  // Seek throttling render loop using requestAnimationFrame with LERP smoothing
+  let smoothTime = 0;
   function renderVideoScrub() {
     if (isFallbackMode) return; 
 
     const destTime = videoProxy.time;
-    const currTime = video.currentTime;
     const now = performance.now();
-    const diff = Math.abs(destTime - currTime);
+    
+    // Smoothly interpolate current time towards target time
+    smoothTime += (destTime - smoothTime) * 0.12;
+    
+    const diff = Math.abs(smoothTime - video.currentTime);
 
-    if (diff > 0.01) {
+    if (diff > 0.005) {
       if (!video.seeking && video.readyState >= 2) {
         if (now - lastSeekTime > seekThrottle || diff < 0.05) {
-          video.currentTime = Math.max(0, Math.min(destTime, videoDuration - 0.05));
+          video.currentTime = Math.max(0, Math.min(smoothTime, videoDuration - 0.05));
           lastSeekTime = now;
         }
       }
@@ -1003,21 +1010,21 @@ function setupScrollStorytelling(video) {
     ease: "power3.inOut"
   }, videoFadeTime);
 
-  // Navigation bar trigger visibility
+  // Navigation bar morph trigger
   ScrollTrigger.create({
     trigger: "#story-pin-container",
     start: "bottom 20%",
     onEnter: () => {
       const navbar = document.getElementById('mainNavbar');
       if (navbar) {
-        navbar.classList.remove('navbar-hidden');
+        navbar.classList.remove('navbar-hero');
         navbar.classList.add('navbar-visible');
       }
     },
     onLeaveBack: () => {
       const navbar = document.getElementById('mainNavbar');
       if (navbar) {
-        navbar.classList.add('navbar-hidden');
+        navbar.classList.add('navbar-hero');
         navbar.classList.remove('navbar-visible');
       }
     }
@@ -1329,8 +1336,27 @@ function setupSlider(sliderContainer, prevBtn, nextBtn, dotsContainer, autoplayI
     const currentSlide = slides[currentIndex];
     const targetSlide = slides[targetIndex];
 
-    currentSlide.classList.remove('active');
+    // Outgoing slide animation
+    gsap.to(currentSlide, {
+      opacity: 0,
+      scale: 0.94,
+      y: -15,
+      duration: 0.45,
+      ease: "power2.in",
+      overwrite: "auto",
+      onComplete: () => {
+        currentSlide.classList.remove('active');
+        // Reset element inline styles so they don't override classes later
+        gsap.set(currentSlide, { clearProps: "all" });
+      }
+    });
+
+    // Incoming slide animation
     targetSlide.classList.add('active');
+    gsap.fromTo(targetSlide, 
+      { opacity: 0, scale: 0.94, y: 15 },
+      { opacity: 1, scale: 1, y: 0, duration: 0.55, ease: "back.out(1.5)", overwrite: "auto" }
+    );
 
     if (dots[currentIndex]) dots[currentIndex].classList.remove('active');
     if (dots[targetIndex]) dots[targetIndex].classList.add('active');
@@ -1585,5 +1611,80 @@ function initScrollProgressBar() {
       const progress = Math.round(self.progress * 100);
       progressBar.style.width = progress + '%';
     }
+  });
+}
+
+/* ==========================================================================
+   20. Card Mouse Spotlight Glow coordinates
+   ========================================================================== */
+function initGlassGlow() {
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+                   || (window.matchMedia("(max-width: 1024px)").matches) 
+                   || ('ontouchstart' in window);
+                   
+  if (isMobile) return;
+  
+  const panels = document.querySelectorAll('.glass-panel');
+  panels.forEach(panel => {
+    panel.addEventListener('mousemove', (e) => {
+      const rect = panel.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      panel.style.setProperty('--card-mouse-x', `${x}px`);
+      panel.style.setProperty('--card-mouse-y', `${y}px`);
+    });
+  });
+}
+
+/* ==========================================================================
+   21. Scroll-Velocity Responsive Wave Dividers
+   ========================================================================== */
+function initScrollVelocityWaves() {
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+                   || (window.matchMedia("(max-width: 1024px)").matches) 
+                   || ('ontouchstart' in window);
+                   
+  if (isMobile) return;
+
+  // Manual high-performance scroll speed calculator to avoid GSAP version mismatch errors
+  let lastScrollY = window.scrollY;
+  let lastScrollTime = Date.now();
+  let scrollVelocity = 0;
+
+  window.addEventListener('scroll', () => {
+    const now = Date.now();
+    const currentScrollY = window.scrollY;
+    const timeDiff = now - lastScrollTime;
+    
+    if (timeDiff > 0) {
+      const distance = Math.abs(currentScrollY - lastScrollY);
+      scrollVelocity = distance / timeDiff; // pixels per ms
+      lastScrollY = currentScrollY;
+      lastScrollTime = now;
+    }
+  }, { passive: true });
+
+  let offset = 0;
+  gsap.ticker.add(() => {
+    // Decay velocity smoothly back to 0
+    scrollVelocity *= 0.94;
+    
+    // speed ranges from 1.0 (base) up to high multipliers when scrolling fast
+    const speed = 1.0 + scrollVelocity * 2.5; 
+    offset -= speed * 0.45;
+    
+    const paths1 = document.querySelectorAll('.animated-divider .wave-line-1');
+    const paths2 = document.querySelectorAll('.animated-divider .wave-line-2');
+    const paths3 = document.querySelectorAll('.animated-divider .wave-line-3');
+    
+    paths1.forEach(path => {
+      path.style.strokeDashoffset = offset;
+    });
+    paths2.forEach(path => {
+      path.style.strokeDashoffset = -offset * 0.7; // Opposing scroll direction
+    });
+    paths3.forEach(path => {
+      path.style.strokeDashoffset = offset * 1.35; // Faster scroll offset
+    });
   });
 }
