@@ -885,7 +885,7 @@ function setupScrollStorytelling(video) {
       trigger: "#story-pin-container",
       start: "top top",
       end: `+=${scrollLength}`,
-      scrub: isMobile ? 1.0 : 1.5,
+      scrub: isMobile ? 0.6 : 0.8, // Decreased scrub lag for more responsive video seeking and text animations
       pin: true,
       anticipatePin: 1
     }
@@ -1071,10 +1071,14 @@ function initCursorAndGlow() {
   const cursorRing = cursor?.querySelector('.cursor-ring');
 
   if (cursorDot) {
+    // Correct alignment by pre-setting GSAP percent translation coordinates
+    gsap.set(cursorDot, { xPercent: -50, yPercent: -50 });
+    gsap.set(cursorRing, { xPercent: -50, yPercent: -50 });
+
     const dotX = gsap.quickTo(cursorDot, "x", { duration: 0.08, ease: "power3.out" });
     const dotY = gsap.quickTo(cursorDot, "y", { duration: 0.08, ease: "power3.out" });
-    const ringX = gsap.quickTo(cursorRing || cursor, "x", { duration: 0.4, ease: "expo.out" });
-    const ringY = gsap.quickTo(cursorRing || cursor, "y", { duration: 0.4, ease: "expo.out" });
+    const ringX = gsap.quickTo(cursorRing || cursor, "x", { duration: 0.35, ease: "expo.out" });
+    const ringY = gsap.quickTo(cursorRing || cursor, "y", { duration: 0.35, ease: "expo.out" });
 
     window.addEventListener('mousemove', (e) => {
       dotX(e.clientX);
@@ -1098,14 +1102,34 @@ function initCursorAndGlow() {
     });
   }
 
-  // Scale cursor on hoverable elements
+  // Scale cursor and apply transitions directly via GSAP to prevent CSS layout reflows on width/height
   const hoverables = document.querySelectorAll('a, button, .dept-card, .tab-btn, .gallery-item, select, input, textarea, .timeline-content, .bento-card, .filter-tag, .overlay-close-btn, .notice-card');
   hoverables.forEach(el => {
     el.addEventListener('mouseenter', () => {
       if (cursor) cursor.classList.add('hover');
+      if (cursorRing) {
+        gsap.to(cursorRing, {
+          scale: 1.5,
+          borderColor: 'var(--color-accent)',
+          backgroundColor: 'rgba(var(--color-accent-rgb), 0.1)',
+          duration: 0.25,
+          ease: "power2.out",
+          overwrite: "auto"
+        });
+      }
     });
     el.addEventListener('mouseleave', () => {
       if (cursor) cursor.classList.remove('hover');
+      if (cursorRing) {
+        gsap.to(cursorRing, {
+          scale: 1.0,
+          borderColor: 'var(--color-primary)',
+          backgroundColor: 'transparent',
+          duration: 0.25,
+          ease: "power2.out",
+          overwrite: "auto"
+        });
+      }
     });
   });
 }
@@ -1122,8 +1146,14 @@ function initCardTilt() {
 
   const cards = document.querySelectorAll('.dept-card, .about-feat-card, .placement-stat-card, .testimonial-card, .bento-card, .leader-card, .notice-card');
   cards.forEach(card => {
+    let rect = null;
+
+    card.addEventListener('mouseenter', () => {
+      rect = card.getBoundingClientRect();
+    });
+
     card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
+      if (!rect) rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
       
@@ -1144,6 +1174,7 @@ function initCardTilt() {
     });
 
     card.addEventListener('mouseleave', () => {
+      rect = null;
       gsap.to(card, {
         rotateX: 0,
         rotateY: 0,
@@ -1167,8 +1198,14 @@ function initMagneticButtons() {
 
   const buttons = document.querySelectorAll('.btn-magnetic');
   buttons.forEach(btn => {
+    let rect = null;
+
+    btn.addEventListener('mouseenter', () => {
+      rect = btn.getBoundingClientRect();
+    });
+
     btn.addEventListener('mousemove', (e) => {
-      const rect = btn.getBoundingClientRect();
+      if (!rect) rect = btn.getBoundingClientRect();
       const x = e.clientX - rect.left - (rect.width / 2);
       const y = e.clientY - rect.top - (rect.height / 2);
       
@@ -1182,6 +1219,7 @@ function initMagneticButtons() {
     });
 
     btn.addEventListener('mouseleave', () => {
+      rect = null;
       gsap.to(btn, {
         x: 0,
         y: 0,
@@ -1626,12 +1664,19 @@ function initGlassGlow() {
   
   const panels = document.querySelectorAll('.glass-panel');
   panels.forEach(panel => {
+    let rect = null;
+    panel.addEventListener('mouseenter', () => {
+      rect = panel.getBoundingClientRect();
+    });
     panel.addEventListener('mousemove', (e) => {
-      const rect = panel.getBoundingClientRect();
+      if (!rect) rect = panel.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
       panel.style.setProperty('--card-mouse-x', `${x}px`);
       panel.style.setProperty('--card-mouse-y', `${y}px`);
+    });
+    panel.addEventListener('mouseleave', () => {
+      rect = null;
     });
   });
 }
@@ -1664,6 +1709,11 @@ function initScrollVelocityWaves() {
     }
   }, { passive: true });
 
+  // Cache SVG path collections once to avoid layout thrashing via queries in ticker
+  const paths1 = document.querySelectorAll('.animated-divider .wave-line-1');
+  const paths2 = document.querySelectorAll('.animated-divider .wave-line-2');
+  const paths3 = document.querySelectorAll('.animated-divider .wave-line-3');
+
   let offset = 0;
   gsap.ticker.add(() => {
     // Decay velocity smoothly back to 0
@@ -1672,10 +1722,6 @@ function initScrollVelocityWaves() {
     // speed ranges from 1.0 (base) up to high multipliers when scrolling fast
     const speed = 1.0 + scrollVelocity * 2.5; 
     offset -= speed * 0.45;
-    
-    const paths1 = document.querySelectorAll('.animated-divider .wave-line-1');
-    const paths2 = document.querySelectorAll('.animated-divider .wave-line-2');
-    const paths3 = document.querySelectorAll('.animated-divider .wave-line-3');
     
     paths1.forEach(path => {
       path.style.strokeDashoffset = offset;

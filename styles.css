@@ -3695,14 +3695,11 @@ body::before {
   pointer-events: none;
   transform: translate(-50%, -50%);
   z-index: 9999;
-  transition: width 0.3s var(--ease-spring), height 0.3s var(--ease-spring), border-color 0.3s ease, background-color 0.3s ease;
+  /* Dimensions & color hover transitions are fully driven by GSAP to avoid reflow lag */
 }
 
 #custom-cursor.hover .cursor-ring {
-  width: 60px;
-  height: 60px;
   border-color: var(--color-accent);
-  background-color: rgba(var(--color-accent-rgb), 0.1);
 }
 
 #bg-glow {
@@ -3716,5 +3713,22 @@ body::before {
   transform: translate(-50%, -50%);
   z-index: -1;
   mix-blend-mode: screen;
+}
+
+.creator-link:hover {
+  filter: brightness(1.25);
+  text-shadow: 0 0 10px rgba(var(--color-accent-rgb), 0.4);
+}
+
+/* --- JS-Driven 3D Tilt Card Performance Overrides --- */
+/* Disables CSS transform transitions on elements with JS tilt to prevent lag and enable spring-back elastic bounces */
+.dept-card, 
+.about-feat-card, 
+.placement-stat-card, 
+.testimonial-card, 
+.bento-card, 
+.leader-card, 
+.notice-card {
+  transition-property: background, border-color, box-shadow, filter !important;
 }
 
