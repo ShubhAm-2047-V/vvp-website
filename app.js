@@ -2060,6 +2060,10 @@ function initWhiteboard() {
     let startX = 0, startY = 0;
     let originalRotation = 0;
     let isDragging = false;
+    
+    // Animation frame throttling variables
+    let requestID = null;
+    let currentX = 0, currentY = 0;
 
     const startDrag = (clientX, clientY, e) => {
       // Don't drag if clicking interactive items inside the card
@@ -2084,32 +2088,51 @@ function initWhiteboard() {
       }
 
       card.classList.add('dragging');
-      card.style.zIndex = '50';
-      card.style.transition = 'none'; // disable CSS transition during dragging
       return true;
     };
 
     const moveDrag = (clientX, clientY) => {
       if (!isDragging) return;
+      currentX = clientX;
+      currentY = clientY;
       
-      const dx = clientX - startX;
-      const dy = clientY - startY;
+      // Use requestAnimationFrame to throttle transforms to screen refresh rate (60/120Hz)
+      if (!requestID) {
+        requestID = requestAnimationFrame(updateDragPosition);
+      }
+    };
+
+    const updateDragPosition = () => {
+      if (!isDragging) {
+        requestID = null;
+        return;
+      }
+      
+      const dx = currentX - startX;
+      const dy = currentY - startY;
       
       // Damped rubber-band stretch offset
       const stretchX = dx * 0.55;
       const stretchY = dy * 0.55;
       
       // Dynamically rotate card slightly based on drag direction
-      const dynamicRotation = originalRotation + (stretchX * 0.06);
+      const dynamicRotation = originalRotation + (stretchX * 0.05);
       
-      // Apply inline styles directly
-      card.style.transform = `translate(${stretchX}px, ${stretchY}px) scale(1.05) rotate(${dynamicRotation}deg)`;
-      card.style.boxShadow = '0 25px 45px rgba(0, 0, 0, 0.28)';
+      // Apply translate3d transforms to force mobile GPU composition layering
+      card.style.transform = `translate3d(${stretchX}px, ${stretchY}px, 0) scale(1.05) rotate(${dynamicRotation}deg)`;
+      
+      requestID = null;
     };
 
     const endDrag = () => {
       if (!isDragging) return;
       isDragging = false;
+      
+      // Cancel any pending animation frames
+      if (requestID) {
+        cancelAnimationFrame(requestID);
+        requestID = null;
+      }
       
       // Spring back with GSAP Elastic out easing
       if (typeof gsap !== 'undefined') {
@@ -2118,24 +2141,17 @@ function initWhiteboard() {
           y: 0,
           scale: 1,
           rotation: originalRotation,
-          boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
           duration: 0.8,
           ease: "elastic.out(1.2, 0.45)",
           onComplete: () => {
             // Reset styles back to CSS controls once bounce finishes
             card.style.transform = '';
-            card.style.zIndex = '';
-            card.style.boxShadow = '';
-            card.style.transition = '';
             card.classList.remove('dragging');
           }
         });
       } else {
         // Fallback if GSAP is not loaded
         card.style.transform = '';
-        card.style.zIndex = '';
-        card.style.boxShadow = '';
-        card.style.transition = '';
         card.classList.remove('dragging');
       }
     };

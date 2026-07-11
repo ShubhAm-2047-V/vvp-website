@@ -3857,6 +3857,7 @@ body::before {
   min-height: 250px;
   transform-origin: top center; /* Anchor note to swing from the push pin */
   touch-action: pan-y; /* Allow scrolling vertical document, overridden during drag */
+  will-change: transform; /* Promote to dedicated GPU composite layer for high-performance mobile drags */
 }
 
 /* Push Pin element */
@@ -4268,6 +4269,11 @@ body::before {
     grid-template-columns: 1fr;
     gap: 2rem;
   }
+
+  /* Disable radial hover glow on mobile viewport to prevent GPU gradient computation lag */
+  .whiteboard-glow {
+    display: none !important;
+  }
 }
 
 /* --- Whiteboard Crazy Hover Physics Animations --- */
@@ -4297,6 +4303,9 @@ body::before {
   user-select: none;
   z-index: 50 !important;
   touch-action: none !important; /* Disable standard swipe/scroll gestures while dragging */
+  transition: none !important; /* Force instantaneous pointer tracking, bypassing CSS ease delay */
+  box-shadow: 0 25px 45px rgba(0, 0, 0, 0.28) !important; /* Static shadow to prevent dynamic repaint cost */
+  will-change: transform;
 }
 
 .sticky-note.dragging::after {
