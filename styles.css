@@ -4311,3 +4311,12 @@ body::before {
 .sticky-note.dragging::after {
   animation: none !important; /* Stop pushpin wiggle too */
 }
+
+/* Mobile Tap Swing Animations */
+.sticky-note.tapped-swing {
+  animation: pinSwing 1.4s ease-in-out forwards !important;
+}
+
+.sticky-note.tapped-swing::after {
+  animation: pinWiggle 0.6s ease-in-out !important;
+}

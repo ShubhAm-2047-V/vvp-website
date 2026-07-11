@@ -2060,6 +2060,7 @@ function initWhiteboard() {
     let startX = 0, startY = 0;
     let originalRotation = 0;
     let isDragging = false;
+    let hasMoved = false;
     
     // Animation frame throttling variables
     let requestID = null;
@@ -2072,6 +2073,7 @@ function initWhiteboard() {
       }
       
       isDragging = true;
+      hasMoved = false;
       startX = clientX;
       startY = clientY;
       
@@ -2095,6 +2097,14 @@ function initWhiteboard() {
       if (!isDragging) return;
       currentX = clientX;
       currentY = clientY;
+      
+      const dx = clientX - startX;
+      const dy = clientY - startY;
+      
+      // Check if mouse actually moved beyond tap threshold (4px)
+      if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
+        hasMoved = true;
+      }
       
       // Use requestAnimationFrame to throttle transforms to screen refresh rate (60/120Hz)
       if (!requestID) {
@@ -2132,6 +2142,14 @@ function initWhiteboard() {
       if (requestID) {
         cancelAnimationFrame(requestID);
         requestID = null;
+      }
+      
+      // If user tapped without dragging, trigger the swing animation as click feedback
+      if (!hasMoved) {
+        card.classList.add('tapped-swing');
+        setTimeout(() => {
+          card.classList.remove('tapped-swing');
+        }, 1400);
       }
       
       // Spring back with GSAP Elastic out easing
@@ -2178,27 +2196,28 @@ function initWhiteboard() {
     // Touch Event Listeners (Mobile support)
     card.addEventListener('touchstart', (e) => {
       const touch = e.touches[0];
-      if (!startDrag(touch.clientX, touch.clientY, e)) return;
+      if (startDrag(touch.clientX, touch.clientY, e)) {
+        e.preventDefault(); // Force active touch takeover (disables mobile page swipe scrolling on the note card body)
 
-      const onTouchMove = (moveEvent) => {
-        if (!isDragging) return;
-        const moveTouch = moveEvent.touches[0];
-        moveDrag(moveTouch.clientX, moveTouch.clientY);
-        // Prevent default screen scrolling while dragging a note card
-        if (moveEvent.cancelable) {
-          moveEvent.preventDefault();
-        }
-      };
+        const onTouchMove = (moveEvent) => {
+          if (!isDragging) return;
+          const moveTouch = moveEvent.touches[0];
+          moveDrag(moveTouch.clientX, moveTouch.clientY);
+          if (moveEvent.cancelable) {
+            moveEvent.preventDefault();
+          }
+        };
 
-      const onTouchEnd = () => {
-        endDrag();
-        document.removeEventListener('touchmove', onTouchMove);
-        document.removeEventListener('touchend', onTouchEnd);
-      };
+        const onTouchEnd = () => {
+          endDrag();
+          document.removeEventListener('touchmove', onTouchMove);
+          document.removeEventListener('touchend', onTouchEnd);
+        };
 
-      document.addEventListener('touchmove', onTouchMove, { passive: false });
-      document.addEventListener('touchend', onTouchEnd);
-    }, { passive: true });
+        document.addEventListener('touchmove', onTouchMove, { passive: false });
+        document.addEventListener('touchend', onTouchEnd);
+      }
+    }, { passive: false });
   }
 
   // Initial rendering
