@@ -3413,16 +3413,8 @@ html.lenis, html.lenis body {
 
 .preloader-title {
   font-size: 1.8rem;
-  margin-bottom: 0.5rem;
-  color: var(--text-primary);
-}
-
-.preloader-subtitle {
-  color: var(--text-muted);
-  font-size: 0.9rem;
   margin-bottom: 2rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  color: var(--text-primary);
 }
 
 .preloader-bar-container {
