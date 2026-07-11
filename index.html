@@ -80,6 +80,7 @@
       <nav class="nav-menu" id="navMenu">
         <a href="#about" class="nav-link">About</a>
         <a href="#departments" class="nav-link">Academics</a>
+        <a href="#whiteboard" class="nav-link">Whiteboard</a>
         <a href="#admissions" class="nav-link">Admissions</a>
         <a href="#placement" class="nav-link">Placements</a>
         <a href="#facilities" class="nav-link">Campus Life</a>
@@ -464,6 +465,121 @@
       </div>
     </div>
   </section>
+
+  <!-- Animated Divider -->
+  <svg class="animated-divider" viewBox="0 0 100 10" preserveAspectRatio="none">
+    <path class="wave-line wave-line-1" d="M0 5 Q 25 10, 50 5 T 100 5" fill="none" stroke-width="0.35"/>
+    <path class="wave-line wave-line-2" d="M0 5 Q 25 3, 50 5 T 100 5" fill="none" stroke-width="0.25" opacity="0.6"/>
+    <path class="wave-line wave-line-3" d="M0 5 Q 25 8, 50 5 T 100 5" fill="none" stroke-width="0.18" opacity="0.35"/>
+  </svg>
+
+  <!-- Interactive Whiteboard Section -->
+  <section class="whiteboard-section" id="whiteboard">
+    <div class="container">
+      <div class="section-title-wrapper reveal">
+        <span class="section-tag">Interactive Space</span>
+        <h2 class="section-title">Collaborative <span class="gradient-text">Whiteboard</span></h2>
+        <p class="section-desc">A space for posting upcoming programs, student suggestions, future academic events, or any general notifications. Pinned notes persist locally.</p>
+      </div>
+
+      <!-- Whiteboard Controls -->
+      <div class="whiteboard-controls reveal">
+        <div class="filter-tags">
+          <div class="filter-tag active" data-board-filter="all">All Pinned Notes</div>
+          <div class="filter-tag" data-board-filter="program">Future Programs</div>
+          <div class="filter-tag" data-board-filter="notice">Notices</div>
+          <div class="filter-tag" data-board-filter="event">Events</div>
+          <div class="filter-tag" data-board-filter="idea">Suggestions/Ideas</div>
+        </div>
+        <button class="btn btn-primary btn-magnetic" id="addNoteBtn">
+          Add Sticky Note <i class="fa-solid fa-plus" style="margin-left: 5px;"></i>
+        </button>
+      </div>
+
+      <!-- The Board Grid Canvas -->
+      <div class="whiteboard-canvas reveal">
+        <div class="whiteboard-glow"></div>
+        <div class="whiteboard-grid" id="whiteboardGrid">
+          <!-- Dynamically populated sticky notes will render here -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Add Sticky Note Modal Overlay -->
+  <div class="immersive-overlay" id="whiteboardOverlay">
+    <div class="modal-backdrop" id="whiteboardBackdrop"></div>
+    <div class="dept-modal glass-panel" id="whiteboardModal" style="max-width: 550px; padding: 2.5rem; overflow-y: auto; max-height: 90vh;">
+      <button class="modal-close-btn" id="whiteboardModalClose" aria-label="Close modal">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      
+      <h3 style="margin-bottom: 1.5rem; font-size: 1.75rem;" class="gradient-text">Pin a New Note</h3>
+      
+      <form id="whiteboardForm">
+        <div class="form-group">
+          <label for="noteTitle">Title</label>
+          <input type="text" id="noteTitle" class="form-input" placeholder="e.g. Android Development Workshop" required maxlength="40">
+        </div>
+        
+        <div class="form-group">
+          <label for="noteContent">Details / Notice Text</label>
+          <textarea id="noteContent" class="form-input" rows="4" placeholder="Enter program schedules, notice description, or suggestions here..." required maxlength="250" style="resize: vertical;"></textarea>
+        </div>
+
+        <div class="form-grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+          <div class="form-group">
+            <label for="noteCategory">Category</label>
+            <select id="noteCategory" class="form-input" required>
+              <option value="program">Future Program</option>
+              <option value="notice">Notice</option>
+              <option value="event">Event</option>
+              <option value="idea">Suggestion / Idea</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="noteAuthor">Posted By</label>
+            <input type="text" id="noteAuthor" class="form-input" placeholder="Your Name or Dept (e.g. Comp Dept)">
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 2rem;">
+          <label style="margin-bottom: 0.75rem; display: block; font-weight: 600;">Select Note Color</label>
+          <div class="color-picker-container" style="display: flex; gap: 1rem;">
+            <label class="color-radio yellow" style="cursor: pointer; position: relative;">
+              <input type="radio" name="noteColor" value="yellow" checked style="display:none;">
+              <span class="color-dot-check" style="display: inline-block; width: 30px; height: 30px; border-radius: 50%; background: #fef08a; border: 2px solid #eab308; transition: transform 0.2s;"></span>
+            </label>
+            <label class="color-radio pink" style="cursor: pointer; position: relative;">
+              <input type="radio" name="noteColor" value="pink" style="display:none;">
+              <span class="color-dot-check" style="display: inline-block; width: 30px; height: 30px; border-radius: 50%; background: #fecdd3; border: 2px solid #e11d48; transition: transform 0.2s;"></span>
+            </label>
+            <label class="color-radio green" style="cursor: pointer; position: relative;">
+              <input type="radio" name="noteColor" value="green" style="display:none;">
+              <span class="color-dot-check" style="display: inline-block; width: 30px; height: 30px; border-radius: 50%; background: #bbf7d0; border: 2px solid #16a34a; transition: transform 0.2s;"></span>
+            </label>
+            <label class="color-radio blue" style="cursor: pointer; position: relative;">
+              <input type="radio" name="noteColor" value="blue" style="display:none;">
+              <span class="color-dot-check" style="display: inline-block; width: 30px; height: 30px; border-radius: 50%; background: #bfdbfe; border: 2px solid #2563eb; transition: transform 0.2s;"></span>
+            </label>
+            <label class="color-radio purple" style="cursor: pointer; position: relative;">
+              <input type="radio" name="noteColor" value="purple" style="display:none;">
+              <span class="color-dot-check" style="display: inline-block; width: 30px; height: 30px; border-radius: 50%; background: #e9d5ff; border: 2px solid #7c3aed; transition: transform 0.2s;"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-actions" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem;">
+          <button type="button" class="btn btn-secondary btn-magnetic" id="whiteboardFormCancel" style="justify-content: center; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fa-solid fa-arrow-left"></i> Back
+          </button>
+          <button type="submit" class="btn btn-primary btn-magnetic" style="justify-content: center; display: flex; align-items: center; gap: 0.5rem; width: 100%;">
+            Pin onto Board <i class="fa-solid fa-thumbtack"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Admissions Section & Eligibility Checker -->
   <section class="admissions" id="admissions">

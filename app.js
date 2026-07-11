@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initStatsCounter();
   initDepartmentModal();
   initEligibilityChecker();
+  initWhiteboard();
   initFacilitiesTabs();
   initInquiryForm();
   initScrollReveal();
@@ -1733,4 +1734,457 @@ function initScrollVelocityWaves() {
       path.style.strokeDashoffset = offset * 1.35; // Faster scroll offset
     });
   });
+}
+
+/* ==========================================================================
+   18. Interactive Whiteboard Logic
+   ========================================================================== */
+function initWhiteboard() {
+  const whiteboardGrid = document.getElementById('whiteboardGrid');
+  const addNoteBtn = document.getElementById('addNoteBtn');
+  const overlay = document.getElementById('whiteboardOverlay');
+  const backdrop = document.getElementById('whiteboardBackdrop');
+  const closeBtn = document.getElementById('whiteboardModalClose');
+  const form = document.getElementById('whiteboardForm');
+  const filterTags = document.querySelectorAll('[data-board-filter]');
+  
+  // Default Sample Notes
+  const DEFAULT_NOTES = [
+    {
+      id: 'default-1',
+      title: 'National Level TechFest 2026',
+      content: 'Gear up for the annual flagship tech-exposition! Projects showcase, UI designing battles, robo-races, and blind-coding competitions scheduled for early October. Registrations open soon!',
+      category: 'program',
+      color: 'blue',
+      author: 'TechFest Organizer Committee',
+      date: 'Jul 10, 2026',
+      likes: 18,
+      likedBySession: false
+    },
+    {
+      id: 'default-2',
+      title: 'TATA Power Recruitment Drive',
+      content: 'Campus recruitment and screening test for final-year Mechanical and Electrical diploma candidates. Apply before the deadline on the placement portal.',
+      category: 'notice',
+      color: 'yellow',
+      author: 'Placement Cell Officer',
+      date: 'Jul 09, 2026',
+      likes: 34,
+      likedBySession: false
+    },
+    {
+      id: 'default-3',
+      title: 'Android & Kotlin Bootcamp',
+      content: 'We are planning a 3-day bootcamp on Android app creation using modern Jetpack Compose for second and final year computer engineering branches.',
+      category: 'idea',
+      color: 'green',
+      author: 'Comp Dept HOD',
+      date: 'Jul 08, 2026',
+      likes: 27,
+      likedBySession: false
+    },
+    {
+      id: 'default-4',
+      title: 'Inter-College Sports Tournament',
+      content: 'Selections for V.V.P. sports teams (Cricket, Volleyball, Kabaddi) will begin next Monday at the campus sports arena. Be ready with sports kits.',
+      category: 'event',
+      color: 'pink',
+      author: 'Physical Director',
+      date: 'Jul 07, 2026',
+      likes: 12,
+      likedBySession: false
+    }
+  ];
+
+  // Helper: Retrieve Notes from localStorage
+  let notes = [];
+  try {
+    const savedNotes = localStorage.getItem('vvp_whiteboard_notes');
+    if (savedNotes) {
+      notes = JSON.parse(savedNotes);
+    } else {
+      notes = [...DEFAULT_NOTES];
+      localStorage.setItem('vvp_whiteboard_notes', JSON.stringify(notes));
+    }
+  } catch (e) {
+    console.error("Local storage not accessible: ", e);
+    notes = [...DEFAULT_NOTES];
+  }
+
+  // Active filter state
+  let currentFilter = 'all';
+
+  // Open Modal
+  const openModal = () => {
+    overlay.classList.add('active');
+    document.getElementById('whiteboardModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  };
+
+  // Close Modal
+  const closeModal = () => {
+    overlay.classList.remove('active');
+    document.getElementById('whiteboardModal').classList.remove('active');
+    document.body.style.overflow = '';
+    form.reset();
+  };
+
+  // Render Pinned Notes to Board Grid
+  const renderNotes = () => {
+    whiteboardGrid.innerHTML = '';
+    
+    // Filter notes
+    const filteredNotes = currentFilter === 'all' 
+      ? notes 
+      : notes.filter(note => note.category === currentFilter);
+
+    if (filteredNotes.length === 0) {
+      whiteboardGrid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; opacity: 0.65;">
+          <i class="fa-solid fa-folder-open" style="font-size: 3rem; margin-bottom: 1rem; color: var(--color-primary);"></i>
+          <h3>No sticky notes pinned under this category.</h3>
+          <p style="margin-top: 0.5rem;">Be the first to pin a new notice or program suggestion!</p>
+        </div>
+      `;
+      return;
+    }
+
+    filteredNotes.forEach(note => {
+      const noteCard = document.createElement('div');
+      noteCard.className = `sticky-note ${note.color}`;
+      noteCard.id = `note-${note.id}`;
+      
+      // Determine human readable category badge
+      let categoryName = 'Program';
+      if (note.category === 'notice') categoryName = 'Notice';
+      if (note.category === 'event') categoryName = 'Event';
+      if (note.category === 'idea') categoryName = 'Suggestion';
+
+      noteCard.innerHTML = `
+        <button class="note-delete" title="Remove Note">
+          <i class="fa-solid fa-trash-can"></i>
+        </button>
+        <div class="note-header">
+          <span class="note-badge">${categoryName}</span>
+        </div>
+        <h4 class="note-title">${escapeHTML(note.title)}</h4>
+        <p class="note-content">${escapeHTML(note.content)}</p>
+        <div class="note-footer">
+          <div class="note-meta">
+            <span class="note-author">By: ${escapeHTML(note.author || 'Anonymous')}</span>
+            <span class="note-date">${note.date}</span>
+          </div>
+          <button class="note-like-btn ${note.likedBySession ? 'liked' : ''}" title="Like Note">
+            <i class="fa-solid fa-heart"></i>
+            <span class="like-count">${note.likes}</span>
+          </button>
+        </div>
+      `;
+
+      // Event Listener: Delete Note
+      const deleteBtn = noteCard.querySelector('.note-delete');
+      deleteBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (confirm("Are you sure you want to remove this sticky note from the whiteboard?")) {
+          // Add removing class for slide-out/shrink animation
+          noteCard.classList.add('removing');
+          
+          // Wait for animation, then update state & re-render
+          setTimeout(() => {
+            notes = notes.filter(n => n.id !== note.id);
+            updateStorage();
+            renderNotes();
+          }, 450);
+        }
+      });
+
+      // Event Listener: Like Note
+      const likeBtn = noteCard.querySelector('.note-like-btn');
+      likeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const foundNote = notes.find(n => n.id === note.id);
+        if (foundNote) {
+          if (foundNote.likedBySession) {
+            foundNote.likes--;
+            foundNote.likedBySession = false;
+            likeBtn.classList.remove('liked');
+          } else {
+            foundNote.likes++;
+            foundNote.likedBySession = true;
+            likeBtn.classList.add('liked');
+          }
+          likeBtn.querySelector('.like-count').innerText = foundNote.likes;
+          updateStorage();
+        }
+      });
+
+      initNoteStretch(noteCard);
+      whiteboardGrid.appendChild(noteCard);
+    });
+
+    // Trigger GSAP entry animation for sticky notes (bouncing pop-in)
+    if (typeof gsap !== 'undefined') {
+      gsap.killTweensOf(".sticky-note");
+      gsap.fromTo(".sticky-note", 
+        { opacity: 0, scale: 0.6, y: 40 },
+        { 
+          opacity: 1, 
+          scale: 1, 
+          y: 0,
+          duration: 0.55,
+          stagger: 0.06,
+          ease: "back.out(1.6)"
+        }
+      );
+    }
+  };
+
+  // Helper: Escape HTML to prevent XSS
+  function escapeHTML(str) {
+    return str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  // Update Local Storage
+  const updateStorage = () => {
+    localStorage.setItem('vvp_whiteboard_notes', JSON.stringify(notes));
+  };
+
+  // Form Submit: Add New Note
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const titleVal = document.getElementById('noteTitle').value.trim();
+    const contentVal = document.getElementById('noteContent').value.trim();
+    const categoryVal = document.getElementById('noteCategory').value;
+    const authorVal = document.getElementById('noteAuthor').value.trim() || 'Anonymous';
+    
+    // Read selected color radio button
+    const colorVal = document.querySelector('input[name="noteColor"]:checked').value;
+    
+    // Create new note object
+    const newNote = {
+      id: Date.now().toString(),
+      title: titleVal,
+      content: contentVal,
+      category: categoryVal,
+      color: colorVal,
+      author: authorVal,
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
+      likes: 0,
+      likedBySession: false
+    };
+
+    // Prepend to notes array to show at the top/front of grid
+    notes.unshift(newNote);
+    updateStorage();
+    
+    // Close modal, reset form
+    closeModal();
+    
+    // Re-render notes, adding custom reveal/fade animation to first node
+    renderNotes();
+    
+    // Add visual bounce animation to the newly added note card
+    const newCardElement = document.getElementById(`note-${newNote.id}`);
+    if (newCardElement) {
+      newCardElement.classList.add('adding');
+      setTimeout(() => {
+        newCardElement.classList.remove('adding');
+      }, 500);
+    }
+  });
+
+  // Filter Buttons event handlers
+  filterTags.forEach(tag => {
+    tag.addEventListener('click', () => {
+      // Toggle active class on tags
+      filterTags.forEach(t => t.classList.remove('active'));
+      tag.classList.add('active');
+      
+      currentFilter = tag.getAttribute('data-board-filter');
+      renderNotes();
+    });
+  });
+
+  // Event Listeners: Modal toggles
+  addNoteBtn.addEventListener('click', openModal);
+  closeBtn.addEventListener('click', closeModal);
+  backdrop.addEventListener('click', closeModal);
+  const cancelBtn = document.getElementById('whiteboardFormCancel');
+  if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && overlay.classList.contains('active')) {
+      closeModal();
+    }
+  });
+
+  // Cursor-tracking warm yellow light glow
+  const canvas = document.querySelector('.whiteboard-canvas');
+  const glow = document.querySelector('.whiteboard-glow');
+  
+  if (canvas && glow) {
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      glow.style.setProperty('--x', `${x}px`);
+      glow.style.setProperty('--y', `${y}px`);
+      glow.style.opacity = '1'; // Ensure opacity stays at 1 while moving inside
+    });
+    
+    canvas.addEventListener('mouseenter', () => {
+      glow.style.opacity = '1';
+    });
+    
+    canvas.addEventListener('mouseleave', (e) => {
+      // Robust boundary check to prevent false mouseleave triggers from browser overlays
+      const rect = canvas.getBoundingClientRect();
+      if (
+        e.clientX < rect.left ||
+        e.clientX >= rect.right ||
+        e.clientY < rect.top ||
+        e.clientY >= rect.bottom
+      ) {
+        glow.style.opacity = '0';
+      }
+    });
+  }
+
+  // Helper: Drag & Stretch note Card elastically
+  function initNoteStretch(card) {
+    let startX = 0, startY = 0;
+    let originalRotation = 0;
+    let isDragging = false;
+
+    const startDrag = (clientX, clientY, e) => {
+      // Don't drag if clicking interactive items inside the card
+      if (e.target.closest('.note-delete') || e.target.closest('.note-like-btn') || e.target.closest('a') || e.target.closest('button')) {
+        return false;
+      }
+      
+      isDragging = true;
+      startX = clientX;
+      startY = clientY;
+      
+      // Parse computed rotation from transform matrix
+      const style = window.getComputedStyle(card);
+      const transform = style.transform;
+      if (transform && transform !== 'none') {
+        const values = transform.split('(')[1].split(')')[0].split(',');
+        const a = parseFloat(values[0]);
+        const b = parseFloat(values[1]);
+        originalRotation = Math.atan2(b, a) * (180 / Math.PI);
+      } else {
+        originalRotation = 0;
+      }
+
+      card.classList.add('dragging');
+      card.style.zIndex = '50';
+      card.style.transition = 'none'; // disable CSS transition during dragging
+      return true;
+    };
+
+    const moveDrag = (clientX, clientY) => {
+      if (!isDragging) return;
+      
+      const dx = clientX - startX;
+      const dy = clientY - startY;
+      
+      // Damped rubber-band stretch offset
+      const stretchX = dx * 0.55;
+      const stretchY = dy * 0.55;
+      
+      // Dynamically rotate card slightly based on drag direction
+      const dynamicRotation = originalRotation + (stretchX * 0.06);
+      
+      // Apply inline styles directly
+      card.style.transform = `translate(${stretchX}px, ${stretchY}px) scale(1.05) rotate(${dynamicRotation}deg)`;
+      card.style.boxShadow = '0 25px 45px rgba(0, 0, 0, 0.28)';
+    };
+
+    const endDrag = () => {
+      if (!isDragging) return;
+      isDragging = false;
+      
+      // Spring back with GSAP Elastic out easing
+      if (typeof gsap !== 'undefined') {
+        gsap.to(card, {
+          x: 0,
+          y: 0,
+          scale: 1,
+          rotation: originalRotation,
+          boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
+          duration: 0.8,
+          ease: "elastic.out(1.2, 0.45)",
+          onComplete: () => {
+            // Reset styles back to CSS controls once bounce finishes
+            card.style.transform = '';
+            card.style.zIndex = '';
+            card.style.boxShadow = '';
+            card.style.transition = '';
+            card.classList.remove('dragging');
+          }
+        });
+      } else {
+        // Fallback if GSAP is not loaded
+        card.style.transform = '';
+        card.style.zIndex = '';
+        card.style.boxShadow = '';
+        card.style.transition = '';
+        card.classList.remove('dragging');
+      }
+    };
+
+    // Mouse Event Listeners
+    card.addEventListener('mousedown', (e) => {
+      if (!startDrag(e.clientX, e.clientY, e)) return;
+      e.preventDefault();
+
+      const onMouseMove = (moveEvent) => {
+        moveDrag(moveEvent.clientX, moveEvent.clientY);
+      };
+
+      const onMouseUp = () => {
+        endDrag();
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+      };
+
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    });
+
+    // Touch Event Listeners (Mobile support)
+    card.addEventListener('touchstart', (e) => {
+      const touch = e.touches[0];
+      if (!startDrag(touch.clientX, touch.clientY, e)) return;
+
+      const onTouchMove = (moveEvent) => {
+        if (!isDragging) return;
+        const moveTouch = moveEvent.touches[0];
+        moveDrag(moveTouch.clientX, moveTouch.clientY);
+        // Prevent default screen scrolling while dragging a note card
+        if (moveEvent.cancelable) {
+          moveEvent.preventDefault();
+        }
+      };
+
+      const onTouchEnd = () => {
+        endDrag();
+        document.removeEventListener('touchmove', onTouchMove);
+        document.removeEventListener('touchend', onTouchEnd);
+      };
+
+      document.addEventListener('touchmove', onTouchMove, { passive: false });
+      document.addEventListener('touchend', onTouchEnd);
+    }, { passive: true });
+  }
+
+  // Initial rendering
+  renderNotes();
 }
